@@ -20,6 +20,7 @@
         private PostService postService;
         @Autowired
         private UserInfoService userInfoService;
+
         private String uploadDirectory = "D:\\Upload\\post\\";
         @PostMapping("/upload")
         //帖子上传
@@ -86,5 +87,18 @@
                 postWithUserInfos.add(new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId())));
             }
             return postWithUserInfos;
+        }
+        @PostMapping("/star")
+        public String starPost(@RequestParam("postId") String postId,
+                             @RequestParam("userId") String userId
+                            ){
+            if(postService.starexist(userId,postId)){
+                //收藏已存在
+                return "收藏存在";
+            }else {
+                //收藏不存在，执行收藏代码
+                postService.saveStar(postId,userId);
+                return "不存在";
+            }
         }
     }
