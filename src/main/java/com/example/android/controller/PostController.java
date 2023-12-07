@@ -22,6 +22,7 @@
         private UserInfoService userInfoService;
         private String uploadDirectory = "D:\\Upload\\post\\";
         @PostMapping("/upload")
+        //帖子上传
         public void handleFileUpload(
                 @RequestPart("post") PostItem post,
                 @RequestParam("images") List<MultipartFile> files,
@@ -76,7 +77,7 @@
 
             postService.createPost(post);
         }
-
+        //帖子获取
         @GetMapping("/getpostlist")
         public List<PostWithUserInfo> getPostList(){
             List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
