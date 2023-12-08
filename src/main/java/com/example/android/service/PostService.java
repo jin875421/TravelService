@@ -1,12 +1,10 @@
 package com.example.android.service;
 
-import com.example.android.entity.Post;
-import com.example.android.entity.PostContent;
-import com.example.android.entity.PostItem;
-import com.example.android.entity.PostPicture;
+import com.example.android.entity.*;
 import com.example.android.repository.PostContentRepository;
 import com.example.android.repository.PostPictureRepository;
 import com.example.android.repository.PostRepository;
+import com.example.android.repository.StarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,7 +21,19 @@ public class PostService {
     private PostContentRepository postContentRepository;
     @Autowired
     private PostPictureRepository postPictureRepository;
+    @Autowired
+    private StarRepository starRepository;
     private Sort sort;
+    public boolean starexist(String userId,String postId){
+        if (starRepository.findByPostIdAndUserId(postId,userId)!=null){
+            return true;
+        }else return false;
+
+    }
+    public void saveStar(String postId,String userId){
+
+        starRepository.save(new Star(postId,userId,UUID.randomUUID().toString()));
+    }
     public void createPost(PostItem post){
         System.out.println(post.getUserId());
         post.setPostId(UUID.randomUUID().toString());
