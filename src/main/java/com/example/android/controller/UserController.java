@@ -78,9 +78,9 @@ public class UserController {
         System.out.println("sdas"+user.getUserName());
         if (userInfo == null) {
             // 注册成功
-                user.setPassword(MD5.create().digestHex16(user.getPassword()));
-                UserInfo add = userInfoService.addUserInfo(user);
-                return ResponseEntity.ok("{'resultCode': 1, 'msg': '注册成功'}");
+            user.setPassword(MD5.create().digestHex16(user.getPassword()));
+            UserInfo add = userInfoService.addUserInfo(user);
+            return ResponseEntity.ok("{'resultCode': 1, 'msg': '注册成功'}");
         } else {
             return ResponseEntity.ok("{'resultCode': 0, 'msg': '用户名已存在请更改'}");
         }
@@ -125,7 +125,7 @@ public class UserController {
         String toEmail = user.getEmail();
 
         // 调用 EmailUtil 中的 sendEmail 方法发送邮件
-        String emailSent= EmailUtil.sendEmail(toEmail);
+        String emailSent=EmailUtil.sendEmail(toEmail);
         codeCache.put(toEmail, emailSent);
         System.out.println(toEmail+ emailSent);
         if (!emailSent.isEmpty()) {
@@ -186,11 +186,9 @@ public class UserController {
     @PostMapping("/updateData")
     public ResponseEntity<String> updateData(@RequestBody UserInfo user) {
         UserInfo userInfo=userInfoService.findByUserId(user.getUserId());
-        System.out.println(user.getUserId());
         if (userInfo !=null) {
-            // 注册成功
             userInfo.setUserName(user.getUserName());
-            UserInfo updateDate = userInfoService.update(userInfo);
+            UserInfo updateData = userInfoService.update(userInfo);
             return ResponseEntity.ok("{'resultCode': 1, 'msg': '修改成功'}");
         } else {
             return ResponseEntity.ok("{'resultCode': 0, 'msg': '修改失败'}");
@@ -200,17 +198,36 @@ public class UserController {
     @GetMapping("/getAvatar")
     public String getAvatar(@RequestParam("userId") String userId) {
         UserInfo userInfo = userInfoService.findByUserId(userId);
+        System.out.println(userInfo.getUserName()+"sdasd");
         if (userInfo != null) {
             String avatarUrl = userInfo.getAvatar();
-            if (avatarUrl != null) {
-                return avatarUrl;
+            String userName=userInfo.getUserName();
+            System.out.println("name"+userName);
+            if (avatarUrl != null&&!avatarUrl.isEmpty()) {
+                return avatarUrl+":"+userName;
+            } else {
+                // Handle the case when avatarUrl is null
+                return "sadasd"+":"+userName;
+            }
+        } else {
+            // Handle the case when userInfo is null
+            return "";
+        }
+    }
+    @GetMapping("/findName")
+    public String findName(@RequestParam("userId")String userId) {
+        UserInfo userInfo = userInfoService.findByUserId(userId);
+        String userName = userInfo.getUserName();
+        System.out.println("name"+userName);
+        if (userInfo != null) {
+            if (userName != null) {
+                return userName;
             } else {
                 // Handle the case when avatarUrl is null
                 return "";
             }
         } else {
-            // Handle the case when userInfo is null
-            return "";
+            return null;
         }
     }
 }

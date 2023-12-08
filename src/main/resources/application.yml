@@ -1,7 +1,7 @@
 server:
-  port: 1234
+  port: 8080
   servlet:
-    context-path: /test
+    context-path: /boot
 spring:
   resources:
     static-locations: file:D:\Upload
