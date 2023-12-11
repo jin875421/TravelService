@@ -34,9 +34,12 @@ public class UserController {
     public ResponseEntity<String> updateUserData(
             @RequestParam("file") MultipartFile file,
             @RequestParam("userName") String userName,
-            @RequestParam("userId") String userId
+            @RequestParam("userId") String userId,
+            @RequestParam("sex")String sex,
+            @RequestParam("userPhoneNumber") String userPhoneNumber,
+            @RequestParam("email")String email
     ) {
-        if (file.isEmpty() && userName.isEmpty()) {
+        if (file.isEmpty() && userName.isEmpty()&&sex.isEmpty()&&userPhoneNumber.isEmpty()) {
             return ResponseEntity.badRequest().body("数据为空请填写。");
         }
 
@@ -50,6 +53,30 @@ public class UserController {
 
         if (!userName.isEmpty()){
             userInfo.setUserName(userName);
+        }
+        if (!sex.isEmpty()){
+            userInfo.setSex(sex);
+        }
+        if (!userPhoneNumber.isEmpty()){
+                if(!userPhoneNumber.matches("^1[3-9]\\d{9}$")){
+                    return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '手机号格式不正确'}");
+                }
+                UserInfo findByPhone = userInfoService.phoneLogin(userPhoneNumber);
+                if (findByPhone != null&&userInfo.getUserId()!=findByPhone.getUserId()) {
+                    return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '该手机号已绑定账号'}");
+                }
+                userInfo.setUserPhoneNumber(userPhoneNumber);
+        }
+        // 检查邮箱是否已经绑定
+        if (!email.isEmpty()) {
+            UserInfo findByEmail = userInfoService.emailLogin(email);
+            if(!email.contains("@")){
+                return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '邮箱格式不正确'}");
+            }
+            if (findByEmail != null&&userInfo.getUserId()!=findByEmail.getUserId()) {
+                return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '该邮箱已绑定账号'}");
+            }
+            userInfo.setEmail(email);
         }
         UserInfo user=userInfoService.update(userInfo);
         if(userInfo==user){
@@ -74,17 +101,33 @@ public class UserController {
     }
     @PostMapping("/register")
     public ResponseEntity<String> addUser(@RequestBody UserInfo user) {
-        UserInfo userInfo = userInfoService.register(user.getUserId());
-        System.out.println("sdas"+user.getUserName());
-        if (userInfo == null) {
-            // 注册成功
-            user.setPassword(MD5.create().digestHex16(user.getPassword()));
-            UserInfo add = userInfoService.addUserInfo(user);
-            return ResponseEntity.ok("{'resultCode': 1, 'msg': '注册成功'}");
-        } else {
-            return ResponseEntity.ok("{'resultCode': 0, 'msg': '用户名已存在请更改'}");
+        // 检查用户名是否已经存在
+        UserInfo existingUser = userInfoService.findByUserId(user.getUserId());
+        if (existingUser != null) {
+            return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '用户名已存在，请更改'}");
+        }
+        // 检查手机号是否已经绑定
+        if(!user.getUserPhoneNumber().isEmpty()) {
+            if(!user.getUserPhoneNumber().matches("^1[3-9]\\d{9}$")){
+                return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '手机号格式不正确'}");
+            }
+            UserInfo findByPhone = userInfoService.phoneLogin(user.getUserPhoneNumber());
+            if (findByPhone != null) {
+                return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '该手机号已绑定账号'}");
+            }
+        }
+        // 检查邮箱是否已经绑定
+        if (!user.getEmail().isEmpty()) {
+            UserInfo findByEmail = userInfoService.emailLogin(user.getEmail());
+            if (findByEmail != null) {
+                return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '该邮箱已绑定账号'}");
+            }
         }
 
+        // 注册成功
+        user.setPassword(MD5.create().digestHex16(user.getPassword()));
+        UserInfo registeredUser = userInfoService.addUserInfo(user);
+        return ResponseEntity.ok("{'resultCode': 1, 'msg': '注册成功'}");
     }
     @PostMapping("/forgotPassword")
     public ResponseEntity<String> forgotPassword(@RequestBody UserInfo user) {
@@ -188,6 +231,28 @@ public class UserController {
         UserInfo userInfo=userInfoService.findByUserId(user.getUserId());
         if (userInfo !=null) {
             userInfo.setUserName(user.getUserName());
+            userInfo.setSex(user.getSex());
+            if (!user.getUserPhoneNumber().isEmpty()){
+                if(!user.getUserPhoneNumber().matches("^1[3-9]\\d{9}$")){
+                    return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '手机号格式不正确'}");
+                }
+                UserInfo findByPhone = userInfoService.phoneLogin(user.getUserPhoneNumber());
+                if (findByPhone != null&&userInfo.getUserId()!=findByPhone.getUserId()) {
+                    return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '该手机号已绑定账号'}");
+                }
+                userInfo.setUserPhoneNumber(user.getUserPhoneNumber());
+            }
+            // 检查邮箱是否已经绑定
+            if (!user.getEmail().isEmpty()) {
+                UserInfo findByEmail = userInfoService.emailLogin(user.getEmail());
+                if(!user.getEmail().contains("@")){
+                    return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '邮箱格式不正确'}");
+                }
+                if (findByEmail != null&&userInfo.getUserId()!=findByEmail.getUserId()) {
+                    return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '该邮箱已绑定账号'}");
+                }
+                userInfo.setEmail(user.getEmail());
+            }
             UserInfo updateData = userInfoService.update(userInfo);
             return ResponseEntity.ok("{'resultCode': 1, 'msg': '修改成功'}");
         } else {
@@ -196,37 +261,12 @@ public class UserController {
 
     }
     @GetMapping("/getAvatar")
-    public String getAvatar(@RequestParam("userId") String userId) {
+    public UserInfo getAvatar(@RequestParam("userId") String userId) {
         UserInfo userInfo = userInfoService.findByUserId(userId);
-        System.out.println(userInfo.getUserName()+"sdasd");
         if (userInfo != null) {
-            String avatarUrl = userInfo.getAvatar();
-            String userName=userInfo.getUserName();
-            System.out.println("name"+userName);
-            if (avatarUrl != null&&!avatarUrl.isEmpty()) {
-                return avatarUrl+":"+userName;
-            } else {
-                // Handle the case when avatarUrl is null
-                return "sadasd"+":"+userName;
-            }
+            return userInfo;
         } else {
             // Handle the case when userInfo is null
-            return "";
-        }
-    }
-    @GetMapping("/findName")
-    public String findName(@RequestParam("userId")String userId) {
-        UserInfo userInfo = userInfoService.findByUserId(userId);
-        String userName = userInfo.getUserName();
-        System.out.println("name"+userName);
-        if (userInfo != null) {
-            if (userName != null) {
-                return userName;
-            } else {
-                // Handle the case when avatarUrl is null
-                return "";
-            }
-        } else {
             return null;
         }
     }
