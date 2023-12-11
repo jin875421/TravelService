@@ -1,6 +1,5 @@
 package com.example.android.controller;
 
-import antlr.StringUtils;
 import cn.hutool.crypto.digest.MD5;
 import com.example.android.entity.UserInfo;
 import com.example.android.service.FileUploadService;
@@ -35,11 +34,9 @@ public class UserController {
     public ResponseEntity<String> updateUserData(
             @RequestParam("file") MultipartFile file,
             @RequestParam("userName") String userName,
-            @RequestParam("userId") String userId,
-            @RequestParam("sex")String sex,
-            @RequestParam("userPhoneNumber")String userPhoneNumber
+            @RequestParam("userId") String userId
     ) {
-        if (file.isEmpty() && userName.isEmpty()&&sex.isEmpty()) {
+        if (file.isEmpty() && userName.isEmpty()) {
             return ResponseEntity.badRequest().body("数据为空请填写。");
         }
 
@@ -53,12 +50,6 @@ public class UserController {
 
         if (!userName.isEmpty()){
             userInfo.setUserName(userName);
-        }
-        if (!sex.isEmpty()){
-            userInfo.setSex(sex);
-        }
-        if(!userPhoneNumber.isEmpty()){
-            userInfo.setUserPhoneNumber(userPhoneNumber);
         }
         UserInfo user=userInfoService.update(userInfo);
         if(userInfo==user){
@@ -83,33 +74,17 @@ public class UserController {
     }
     @PostMapping("/register")
     public ResponseEntity<String> addUser(@RequestBody UserInfo user) {
-        // 检查用户名是否已经存在
-        UserInfo existingUser = userInfoService.findByUserId(user.getUserId());
-        if (existingUser != null) {
-            return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '用户名已存在，请更改'}");
-        }
-        if (!user.getUserPhoneNumber().isEmpty()) {
-            if(!user.getUserPhoneNumber().matches("^1[3-9]\\d{9}$")){
-                return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '手机号格式不正确'}");
-            }
-            // 检查手机号是否已经绑定
-            UserInfo findByPhone = userInfoService.phoneLogin(user.getUserPhoneNumber());
-            if (findByPhone != null) {
-                return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '该手机号已绑定账号'}");
-            }
-        }
-        // 检查邮箱是否已经绑定
-        if (!user.getEmail().isEmpty()) {
-            UserInfo findByEmail = userInfoService.emailLogin(user.getEmail());
-            if (findByEmail != null) {
-                return ResponseEntity.badRequest().body("{'resultCode': 0, 'msg': '该邮箱已绑定账号'}");
-            }
+        UserInfo userInfo = userInfoService.register(user.getUserId());
+        System.out.println("sdas"+user.getUserName());
+        if (userInfo == null) {
+            // 注册成功
+            user.setPassword(MD5.create().digestHex16(user.getPassword()));
+            UserInfo add = userInfoService.addUserInfo(user);
+            return ResponseEntity.ok("{'resultCode': 1, 'msg': '注册成功'}");
+        } else {
+            return ResponseEntity.ok("{'resultCode': 0, 'msg': '用户名已存在请更改'}");
         }
 
-        // 注册成功
-        user.setPassword(MD5.create().digestHex16(user.getPassword()));
-        UserInfo registeredUser = userInfoService.addUserInfo(user);
-        return ResponseEntity.ok("{'resultCode': 1, 'msg': '注册成功'}");
     }
     @PostMapping("/forgotPassword")
     public ResponseEntity<String> forgotPassword(@RequestBody UserInfo user) {
@@ -152,6 +127,7 @@ public class UserController {
         // 调用 EmailUtil 中的 sendEmail 方法发送邮件
         String emailSent=EmailUtil.sendEmail(toEmail);
         codeCache.put(toEmail, emailSent);
+        System.out.println(toEmail+ emailSent);
         if (!emailSent.isEmpty()) {
             // 邮件发送成功，执行更新操作
             return ResponseEntity.ok("{'resultCode': 1, 'msg': '发送成功'}");
@@ -170,6 +146,7 @@ public class UserController {
 
         // 调用发送短信的工具类
         String code = smsUtil.sendSms(phoneNumber);
+        System.out.println("phone"+code);
         if (!code.isEmpty()) {
             // 短信发送成功，将验证码存入缓存
             codeCache.put(phoneNumber, code);
@@ -201,7 +178,7 @@ public class UserController {
                 return ResponseEntity.ok("{'resultCode': 0, 'msg': '验证码不正确或已过期，请重试'}");
             }
         } else {
-            return ResponseEntity.ok("{'resultCode': 0, 'msg': '用户不存在，请检查手机号或邮箱是否正确'}");
+            return ResponseEntity.ok("{'resultCode': 0, 'msg': '用户不存在，请重试'}");
         }
     }
 
@@ -211,7 +188,6 @@ public class UserController {
         UserInfo userInfo=userInfoService.findByUserId(user.getUserId());
         if (userInfo !=null) {
             userInfo.setUserName(user.getUserName());
-            userInfo.setSex(user.getSex());
             UserInfo updateData = userInfoService.update(userInfo);
             return ResponseEntity.ok("{'resultCode': 1, 'msg': '修改成功'}");
         } else {
@@ -220,12 +196,37 @@ public class UserController {
 
     }
     @GetMapping("/getAvatar")
-    public UserInfo getAvatar(@RequestParam("userId") String userId) {
+    public String getAvatar(@RequestParam("userId") String userId) {
         UserInfo userInfo = userInfoService.findByUserId(userId);
+        System.out.println(userInfo.getUserName()+"sdasd");
         if (userInfo != null) {
-            return userInfo;
+            String avatarUrl = userInfo.getAvatar();
+            String userName=userInfo.getUserName();
+            System.out.println("name"+userName);
+            if (avatarUrl != null&&!avatarUrl.isEmpty()) {
+                return avatarUrl+":"+userName;
+            } else {
+                // Handle the case when avatarUrl is null
+                return "sadasd"+":"+userName;
+            }
         } else {
             // Handle the case when userInfo is null
+            return "";
+        }
+    }
+    @GetMapping("/findName")
+    public String findName(@RequestParam("userId")String userId) {
+        UserInfo userInfo = userInfoService.findByUserId(userId);
+        String userName = userInfo.getUserName();
+        System.out.println("name"+userName);
+        if (userInfo != null) {
+            if (userName != null) {
+                return userName;
+            } else {
+                // Handle the case when avatarUrl is null
+                return "";
+            }
+        } else {
             return null;
         }
     }

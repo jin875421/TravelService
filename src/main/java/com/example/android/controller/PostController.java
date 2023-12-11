@@ -22,6 +22,16 @@
         private UserInfoService userInfoService;
 
         private String uploadDirectory = "D:\\Upload\\post\\";
+        @GetMapping ("/getstarlist")
+        public List<PostWithUserInfo> getStarList(@RequestParam String userId){
+            List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
+            List<PostItem> posts = postService.findStarList(userId);
+            for (PostItem post:posts){
+                postWithUserInfos.add(new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId())));
+            }
+            return postWithUserInfos;
+        }
+
         @PostMapping("/upload")
         //帖子上传
         public void handleFileUpload(
