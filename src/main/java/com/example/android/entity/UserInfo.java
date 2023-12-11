@@ -18,6 +18,7 @@ public class UserInfo {
     private String email;
     private String userName;
     private String userPhoneNumber;
+    private String sex;
     @Transient
     private String code;
     @Transient
