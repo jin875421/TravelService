@@ -11,8 +11,8 @@ public class Star {
     String userId;
     @Id
     String starId;
-
     public Star() {
+
     }
 
     public Star(String postId, String userId, String starId) {

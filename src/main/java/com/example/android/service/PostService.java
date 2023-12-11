@@ -59,4 +59,23 @@ public class PostService {
         }
         return postItems;
     }
+
+    public List<PostItem> findStarList(String userId) {
+        List<Post> postList;
+        List<PostItem> postItems = new ArrayList<>();
+        List<String> postId = new ArrayList<>();
+        postId = starRepository.findPostIdByUserId(userId);
+//        sort = Sort.by(Sort.Direction.DESC, "createTime");
+        postList = postRepository.findAllById(postId);
+        for (Post post:postList){
+            List<String> picturePaths = new ArrayList<>();
+            for (PostPicture postPicture:postPictureRepository.findByPostId(post.getPostId())){
+                picturePaths.add(postPicture.getPicturePath());
+            }
+            PostContent postContent = postContentRepository.findByPostId(post.getPostId());
+            PostItem postItem = new PostItem(post.getPostId(),postContent.getPostTitle(),postContent.getPostContent(),post.getUserId(),post.getCreateTime(),picturePaths,postContent.getPictureNumber());
+            postItems.add(postItem);
+        }
+        return postItems;
+    }
 }

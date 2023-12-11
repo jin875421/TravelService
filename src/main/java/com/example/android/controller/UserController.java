@@ -75,7 +75,6 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<String> addUser(@RequestBody UserInfo user) {
         UserInfo userInfo = userInfoService.register(user.getUserId());
-        System.out.println("sdas"+user.getUserName());
         if (userInfo == null) {
             // 注册成功
             user.setPassword(MD5.create().digestHex16(user.getPassword()));
@@ -127,7 +126,6 @@ public class UserController {
         // 调用 EmailUtil 中的 sendEmail 方法发送邮件
         String emailSent=EmailUtil.sendEmail(toEmail);
         codeCache.put(toEmail, emailSent);
-        System.out.println(toEmail+ emailSent);
         if (!emailSent.isEmpty()) {
             // 邮件发送成功，执行更新操作
             return ResponseEntity.ok("{'resultCode': 1, 'msg': '发送成功'}");
@@ -139,14 +137,12 @@ public class UserController {
     @PostMapping("/sendSms")
     public ResponseEntity<String> sendSms(@RequestBody UserInfo userInfo) {
         String phoneNumber = userInfo.getUserPhoneNumber();
-
         if (phoneNumber == null || phoneNumber.isEmpty()) {
             return ResponseEntity.ok("{'resultCode': 0, 'msg': '发送失败请重试，手机号为空'}");
         }
 
         // 调用发送短信的工具类
         String code = smsUtil.sendSms(phoneNumber);
-        System.out.println("phone"+code);
         if (!code.isEmpty()) {
             // 短信发送成功，将验证码存入缓存
             codeCache.put(phoneNumber, code);
@@ -198,7 +194,6 @@ public class UserController {
     @GetMapping("/getAvatar")
     public String getAvatar(@RequestParam("userId") String userId) {
         UserInfo userInfo = userInfoService.findByUserId(userId);
-        System.out.println(userInfo.getUserName()+"sdasd");
         if (userInfo != null) {
             String avatarUrl = userInfo.getAvatar();
             String userName=userInfo.getUserName();
