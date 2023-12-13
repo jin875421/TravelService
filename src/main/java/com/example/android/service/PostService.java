@@ -34,6 +34,22 @@ public class PostService {
 
         starRepository.save(new Star(postId,userId,UUID.randomUUID().toString()));
     }
+    public List<PostItem> searchPost(String searchText){
+        List<Post> postList = postRepository.findAll(sort);
+        List<PostItem> postItems = new ArrayList<>();
+        for (Post post:postList){
+            if (postContentRepository.findByPostId(post.getPostId()).getPostTitle().contains(searchText)){
+                List<String> picturePaths = new ArrayList<>();
+                for (PostPicture postPicture:postPictureRepository.findByPostId(post.getPostId())){
+                    picturePaths.add(postPicture.getPicturePath());
+                }
+                PostContent postContent = postContentRepository.findByPostId(post.getPostId());
+                PostItem postItem = new PostItem(post.getPostId(),postContent.getPostTitle(),postContent.getPostContent(),post.getUserId(),post.getCreateTime(),picturePaths,postContent.getPictureNumber());
+                postItems.add(postItem);
+            }
+        }
+        return postItems;
+    }
     public void createPost(PostItem post){
         System.out.println(post.getUserId());
         post.setPostId(UUID.randomUUID().toString());

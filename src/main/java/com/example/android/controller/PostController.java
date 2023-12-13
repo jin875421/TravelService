@@ -31,7 +31,15 @@
             }
             return postWithUserInfos;
         }
-
+        @GetMapping("/search")
+        public List<PostWithUserInfo> searchPostList(@RequestParam String searchText){
+            List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
+            List<PostItem> posts = postService.searchPost(searchText);
+            for (PostItem post:posts){
+                postWithUserInfos.add(new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId())));
+            }
+            return postWithUserInfos;
+        }
         @PostMapping("/upload")
         //帖子上传
         public void handleFileUpload(
