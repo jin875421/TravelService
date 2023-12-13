@@ -92,7 +92,9 @@ public class UserController {
         if (userInfo != null) {
             String userId = userInfo.getUserId(); // 获取用户ID
             String userName=userInfo.getUserName();//获取昵称
-            String responseJson = String.format("{'resultCode': 1, 'msg': '登录成功', 'userId': '%s','userName':'%s'}", userId,userName);
+            String userPhoneNumber=userInfo.getUserPhoneNumber();
+            String email=userInfo.getEmail();
+            String responseJson = String.format("{'resultCode': 1, 'msg': '登录成功', 'userId': '%s','userName':'%s','userPhoneNumber':'%s','email':'%s'}", userId,userName,userPhoneNumber,email);
             return ResponseEntity.ok(responseJson);
         } else {
             // 登录失败
@@ -215,7 +217,9 @@ public class UserController {
             if (storedCode != null && storedCode.equals(user.getCode())) {
                 String userId = userInfo.getUserId();
                 String userName = userInfo.getUserName();
-                String responseJson = String.format("{'resultCode': 1, 'msg': '登录成功', 'userId': '%s','userName':'%s'}", userId, userName);
+                String userPhoneNumber=userInfo.getUserPhoneNumber();
+                String email=userInfo.getEmail();
+                String responseJson = String.format("{'resultCode': 1, 'msg': '登录成功', 'userId': '%s','userName':'%s','userPhoneNumber':'%s','email':'%s'}", userId,userName,userPhoneNumber,email);
                 return ResponseEntity.ok(responseJson);
             } else {
                 return ResponseEntity.ok("{'resultCode': 0, 'msg': '验证码不正确或已过期，请重试'}");
