@@ -1,9 +1,8 @@
 package com.example.android.service;
 
-import com.example.android.entity.Comment;
-import com.example.android.entity.ReturnComment;
-import com.example.android.entity.UserInfo;
+import com.example.android.entity.*;
 import com.example.android.repository.CommentRepository;
+import com.example.android.repository.CommentRespondRepository;
 import com.example.android.repository.UserInfoRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +25,20 @@ public class CommentService {
     private CommentRepository commentRepository;
     @Autowired
     private UserInfoRepository userInfoRepository;
+    @Autowired
+    private CommentRespondRepository commentRespondRepository;
 
     //上传评论，将评论内容保存到数据库中
     public Comment addComment(Comment comment){
         Comment save = commentRepository.save(comment);
         logger.info("保存到数据库中的评论"+save);
+        return save;
+    }
+
+    //上传评论回复
+    public CommentRespond addCommentRespond(CommentRespond commentRespond){
+        CommentRespond save = commentRespondRepository.save(commentRespond);
+        logger.info("保存到数据库中的评论回复"+save);
         return save;
     }
 
@@ -43,6 +51,19 @@ public class CommentService {
         System.out.println("commentList为"+commentList.size());
         //遍历帖子下的所有评论内容
         for(Comment comment:commentList) {
+            List<ReturnCommentRespond> returnCommentRespondList = new ArrayList<>();
+            //遍历每条评论的回复内容
+            List<CommentRespond> CommentRespondList = commentRespondRepository.findByCommentId(comment.getCommentId(), sort);
+            for(CommentRespond commentRespond:CommentRespondList) {
+                ReturnCommentRespond returnCommentRespond = new ReturnCommentRespond(
+                        getUserNameByUserId(commentRespond.getUserId()),
+                        commentRespond.getText(),
+                        commentRespond.getTime(),
+                        getAvatarByUserId(commentRespond.getUserId())
+                );
+                System.out.println("returnCommentRespond"+returnCommentRespond);
+                returnCommentRespondList.add(returnCommentRespond);
+            }
             //将评论信息和发布者信息结合起来
             ReturnComment returnComment = new ReturnComment(comment.getCommentId(),
                     getUserNameByUserId(comment.getUserId()),
@@ -50,11 +71,29 @@ public class CommentService {
                     comment.getText(),
                     comment.getTime(),
                     getAvatarByUserId(comment.getUserId()),
-                    comment.getUserId());
+                    comment.getUserId(),
+                    returnCommentRespondList
+            );
             System.out.println("returnComment为"+returnComment);
             returnCommentList.add(returnComment);
         }
         return returnCommentList;
+    }
+
+    public List<ReturnCommentRespond> getReturnCommentRespondList(String theCommentId) {
+        List<ReturnCommentRespond> returnCommentRespondList = new ArrayList<>();
+        sort = Sort.by(Sort.Direction.DESC, "time");
+        List<CommentRespond> commentRespondList = commentRespondRepository.findByCommentId(theCommentId, sort);
+        for(CommentRespond commentRespond:commentRespondList) {
+            ReturnCommentRespond returnCommentRespond = new ReturnCommentRespond(
+                    getUserNameByUserId(commentRespond.getUserId()),
+                    commentRespond.getText(),
+                    commentRespond.getTime(),
+                    getAvatarByUserId(commentRespond.getUserId())
+            );
+            returnCommentRespondList.add(returnCommentRespond);
+        }
+        return returnCommentRespondList;
     }
 
     //查询用户名

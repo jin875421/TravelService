@@ -1,5 +1,7 @@
 package com.example.android.entity;
 
+import java.util.List;
+
 //用于在显示评论区获取评论内容
 public class ReturnComment {
     private String commentId;
@@ -9,8 +11,9 @@ public class ReturnComment {
     private String uploadTime;
     private String avatar;
     private String userId;
+    private List<ReturnCommentRespond> returnCommentResponds;
 
-    public ReturnComment(String commentId, String username, String postId, String comment, String uploadTime, String avatar, String userId) {
+    public ReturnComment(String commentId, String username, String postId, String comment, String uploadTime, String avatar, String userId, List<ReturnCommentRespond> returnCommentResponds) {
         this.commentId = commentId;
         this.username = username;
         this.postId = postId;
@@ -18,6 +21,15 @@ public class ReturnComment {
         this.uploadTime = uploadTime;
         this.avatar = avatar;
         this.userId = userId;
+        this.returnCommentResponds = returnCommentResponds;
+    }
+
+    public List<ReturnCommentRespond> getReturnCommentResponds() {
+        return returnCommentResponds;
+    }
+
+    public void setReturnCommentResponds(List<ReturnCommentRespond> returnCommentResponds) {
+        this.returnCommentResponds = returnCommentResponds;
     }
 
     public String getUserId() {
