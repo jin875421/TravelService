@@ -168,6 +168,10 @@ public class TravelsService {
             //最后将所有的东西都封装到实体类中
             showTravel.setImages(images);
             showTravel.setTravelId(travelId);
+            showTravel.setUserId(userId);
+            //根据travelId找到travelName
+            String trName = travelRepository.findTravelNameByTravelId(travelId);
+            showTravel.setTravelName(trName);
 
             //然后将这个类封装到整体要返回的list中
             showTravelsList.add(showTravel);

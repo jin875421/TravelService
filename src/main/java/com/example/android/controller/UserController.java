@@ -50,7 +50,6 @@ public class UserController {
             userInfo.setAvatar(relativePath);
         }
         // 更新用户信息
-
         if (!userName.isEmpty()){
             userInfo.setUserName(userName);
         }

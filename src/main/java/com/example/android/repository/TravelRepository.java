@@ -13,4 +13,6 @@ public interface TravelRepository extends JpaRepository<Travel, String>, JpaSpec
     public List<Travel> findTravelsByUserId(String userId);
 
     public Travel findTravelsByTravelId(String travelId);
+
+    String findTravelNameByTravelId(String travelId);
 }
