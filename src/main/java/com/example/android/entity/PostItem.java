@@ -11,14 +11,13 @@ public class PostItem {
     List<String> picturePath;
     int PictureNumber;
 
-    public PostItem(String postId, String postTitle, String postContent, String userId, String createTime, List<String> picturePath, int pictureNumber) {
+    public PostItem(String postId, String postTitle, String postContent, String userId, String createTime, List<String> picturePath) {
         this.postId = postId;
         this.postTitle = postTitle;
         this.postContent = postContent;
         this.userId = userId;
         this.createTime = createTime;
         this.picturePath = picturePath;
-        PictureNumber = pictureNumber;
     }
     public PostItem(){
 

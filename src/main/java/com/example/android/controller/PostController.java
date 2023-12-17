@@ -7,6 +7,8 @@
     import org.springframework.util.FileCopyUtils;
     import org.springframework.web.bind.annotation.*;
     import org.springframework.web.multipart.MultipartFile;
+
+    import javax.transaction.Transactional;
     import java.io.*;
     import java.nio.file.Files;
     import java.nio.file.Path;
@@ -44,11 +46,96 @@
         //帖子上传
         public void handleFileUpload(
                 @RequestPart("post") PostItem post,
-                @RequestParam("images") List<MultipartFile> files,
                 @RequestParam("identifiers") List<String> identifiers,
                 @RequestParam("sequenceNumbers") List<Integer> sequenceNumbers,
-                @RequestParam("totalChunks") List<Integer> totalChunks
-        ) {
+                @RequestParam("totalChunks") List<Integer> totalChunks,
+                @RequestParam("images") List<MultipartFile> files
+
+                ) {
+            //如果图片存在
+            if (post.getPictureNumber()>0){
+                List<String> fileNames = new ArrayList<>();
+                for (int i = 0; i < files.size(); i++) {
+                    MultipartFile file = files.get(i);
+                    String identifier = identifiers.get(i);
+                    int sequenceNumber = sequenceNumbers.get(i);
+                    int totalChunk = totalChunks.get(i);
+                    try {
+                        // 创建目录（如果不存在）
+                        File uploadDir = new File(uploadDirectory);
+                        if (!uploadDir.exists()) {
+                            uploadDir.mkdirs();
+                        }
+                        // 构建文件名（使用标识符和序号）
+                        String fileName = identifier + "_" + sequenceNumber + "_" + file.getOriginalFilename();
+                        // 保存文件分片
+                        byte[] bytes = file.getBytes();
+                        Path path = Paths.get(uploadDirectory + fileName);
+                        Files.write(path, bytes);
+                        // 检查是否所有分片都已上传
+                        if (sequenceNumber == totalChunk - 1) {
+                            // 如果所有分片都已上传，则重组文件
+                            String combinedFileName = identifier + "_" + file.getOriginalFilename();
+                            fileNames.add("post/"+combinedFileName);
+                            File combinedFile = new File(uploadDirectory + combinedFileName);
+                            for (int j = 0; j < totalChunk; j++) {
+                                File partFile = new File(uploadDirectory + identifier + "_" + j + "_" + file.getOriginalFilename());
+                                FileOutputStream fos = new FileOutputStream(combinedFile, true);
+                                FileInputStream fis = new FileInputStream(partFile);
+                                FileCopyUtils.copy(fis, fos);
+                                fis.close();
+                                fos.close();
+                                partFile.delete(); // 清理分片文件
+                            }
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        // 处理异常
+                        throw new RuntimeException("文件分片上传失败.");
+                    }
+                }
+                post.setPicturePath(fileNames);
+            }
+            postService.createPost(post);
+        }
+        //帖子获取
+        @GetMapping("/getpostlist")
+        public List<PostWithUserInfo> getPostList(){
+            List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
+            List<PostItem> posts = postService.findPostList();
+            for (PostItem post:posts){
+                postWithUserInfos.add(new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId())));
+            }
+            return postWithUserInfos;
+        }
+        @PostMapping("/star")
+        public String starPost(@RequestParam("postId") String postId,
+                             @RequestParam("userId") String userId
+                            ){
+            if(postService.starexist(userId,postId)){
+                //收藏已存在
+                return "收藏存在";
+            }else {
+                //收藏不存在，执行收藏代码
+                postService.saveStar(postId,userId);
+                return "不存在";
+            }
+        }
+        @GetMapping("/deletePost")
+        @Transactional
+        public String deletePost(String postId){
+            postService.deletePost(postId);
+            return "删除成功";
+        }
+        @PostMapping("/updatewithnewimage")
+        @Transactional
+        public void updatePost(@RequestParam("postId") String postId,
+                               @RequestParam("deletedPicturePaths") List<String> deletedPicturePaths,
+                               @RequestPart("post") PostItem post,
+                               @RequestParam("identifiers") List<String> identifiers,
+                               @RequestParam("sequenceNumbers") List<Integer> sequenceNumbers,
+                               @RequestParam("totalChunks") List<Integer> totalChunks,
+                               @RequestParam("images") List<MultipartFile> files){
             //如果图片存在
             if (post.getPictureNumber()>0){
                 List<String> fileNames = new ArrayList<>();
@@ -94,29 +181,20 @@
                 post.setPicturePath(fileNames);
             }
 
-            postService.createPost(post);
+            postService.updatePost(post,postId);
+            postService.deleteimage(deletedPicturePaths);
         }
-        //帖子获取
-        @GetMapping("/getpostlist")
-        public List<PostWithUserInfo> getPostList(){
-            List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
-            List<PostItem> posts = postService.findPostList();
-            for (PostItem post:posts){
-                postWithUserInfos.add(new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId())));
-            }
-            return postWithUserInfos;
+        @PostMapping("/updatewithoutnewimage")
+        @Transactional
+        public void updatePostWithoutPicture(@RequestParam("postId") String postId,
+                                             @RequestParam("deletedPicturePaths") List<String> deletedPicturePaths,
+                                             @RequestPart("post") PostItem post){
+            postService.updatePostWithoutPicture(post,postId);
+            postService.deleteimage(deletedPicturePaths);
         }
-        @PostMapping("/star")
-        public String starPost(@RequestParam("postId") String postId,
-                             @RequestParam("userId") String userId
-                            ){
-            if(postService.starexist(userId,postId)){
-                //收藏已存在
-                return "收藏存在";
-            }else {
-                //收藏不存在，执行收藏代码
-                postService.saveStar(postId,userId);
-                return "不存在";
-            }
+        @GetMapping("/getPostById")
+        public PostWithUserInfo getPostById(String postId){
+            PostItem post = postService.findById(postId);
+            return new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId()));
         }
     }

@@ -20,7 +20,6 @@ public class TravelController {
     //首先依赖注入
     @Autowired
     private TravelsService travelsService;
-
     //这个方法用于实现根据用户传递过来的id来查找到所有的照片地址和相应的日期，然后返回成一个list列表
     @PostMapping("/showPictures")
     public Result<List<ShowPicture>> showPictures(String userId){

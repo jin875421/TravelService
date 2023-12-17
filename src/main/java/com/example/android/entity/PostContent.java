@@ -12,14 +12,12 @@ public class PostContent {
     String postId;
     String postContent;
     String postTitle;
-    int pictureNumber;
 
-    public PostContent(String contentId, String postId, String postContent, String postTitle, int pictureNumber) {
+    public PostContent(String contentId, String postId, String postContent, String postTitle) {
         this.contentId = contentId;
         this.postId = postId;
         this.postContent = postContent;
         this.postTitle = postTitle;
-        this.pictureNumber = pictureNumber;
     }
 
     public PostContent() {
@@ -58,11 +56,4 @@ public class PostContent {
         this.postTitle = postTitle;
     }
 
-    public int getPictureNumber() {
-        return pictureNumber;
-    }
-
-    public void setPictureNumber(int pictureNumber) {
-        this.pictureNumber = pictureNumber;
-    }
 }
