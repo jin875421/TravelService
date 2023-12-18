@@ -14,6 +14,7 @@ public class Comment {
     @Id
     private String commentId;
     private String time;
+    private String parentId;
 
     @Override
     public String toString() {
@@ -23,15 +24,17 @@ public class Comment {
                 ", text='" + text + '\'' +
                 ", commentId='" + commentId + '\'' +
                 ", time='" + time + '\'' +
+                ", parentId'" + parentId + '\'' +
                 '}';
     }
 
-    public Comment(String postId, String userId, String text, String commentId, String time) {
+    public Comment(String postId, String userId, String text, String commentId, String time, String parentId) {
         this.postId = postId;
         this.userId = userId;
         this.text = text;
         this.commentId = commentId;
         this.time = time;
+        this.parentId = parentId;
     }
 
     public Comment(){}
@@ -74,6 +77,14 @@ public class Comment {
 
     public void setCommentId(String commentId) {
         this.commentId = commentId;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parent_id) {
+        this.parentId = parent_id;
     }
 }
 

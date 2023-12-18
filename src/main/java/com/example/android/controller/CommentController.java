@@ -1,7 +1,6 @@
 package com.example.android.controller;
 
 import com.example.android.entity.Comment;
-import com.example.android.entity.CommentRespond;
 import com.example.android.entity.ReturnComment;
 import com.example.android.entity.ReturnCommentRespond;
 import com.example.android.service.CommentService;
@@ -44,14 +43,6 @@ public class CommentController {
         System.out.println("移动端在评论详情页面上提交回复之后请求刷新数据，服务器返回的数据"+json);
 
         return json;
-    }
-
-    @PostMapping("addCommentRespond")
-    public String addCommentRespond(@RequestBody CommentRespond commentRespond) {
-
-        service.addCommentRespond(commentRespond);
-
-        return "评论回复接收成功";
     }
 
     @PostMapping("/addComment")
