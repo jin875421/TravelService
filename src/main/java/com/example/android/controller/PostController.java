@@ -9,6 +9,7 @@
     import org.springframework.web.bind.annotation.*;
     import org.springframework.web.multipart.MultipartFile;
 
+    import javax.transaction.Transactional;
     import java.io.*;
     import java.nio.file.Files;
     import java.nio.file.Path;
@@ -109,6 +110,7 @@
             return postWithUserInfos;
         }
         @PostMapping("/star")
+        @Transactional
         public String starPost(@RequestParam("postId") String postId,
                              @RequestParam("userId") String userId
                             ){
@@ -123,6 +125,7 @@
             }
         }
         @PostMapping("/like")
+        @Transactional
         public String likePost(@RequestParam("postId") String postId,
                              @RequestParam("userId") String userId
                             ){
@@ -136,22 +139,20 @@
                 return "添加";
             }
         }
-        @GetMapping("/deletePost")
-        public String deletePost(String postId){
-            postService.deletePost(postId);
-            return "删除成功";
-        }
         @GetMapping("/getLikeAndStarStatus")
+        @ResponseBody
         public LikeAndStarStatusResponse getLikeAndStarStatus(@RequestParam("postId") String postId,
                                                               @RequestParam("userId") String userId){
             int likeStatus = 0;
             int starStatus = 0;
             if(postService.starExist(userId,postId)){
-                likeStatus = 1;
-            }
-            if(postService.likeExist(userId,postId)){
                 starStatus = 1;
             }
+            if(postService.likeExist(userId,postId)){
+                likeStatus = 1;
+            }
+            System.out.println(likeStatus);
+            System.out.println(starStatus);
             //向客户端返回点赞和收藏状态
             return new LikeAndStarStatusResponse(likeStatus,starStatus);
 

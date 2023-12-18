@@ -71,7 +71,7 @@ public class PostService {
     }
     //添加点赞
     public void saveLike(String postId,String userId){
-        likeRepository.save(new Like(postId,userId,UUID.randomUUID().toString()));
+        likeRepository.save(new Likes(postId,userId,UUID.randomUUID().toString()));
     }
     //删除点赞
     public void deleteLike(String postId,String userId){
