@@ -23,12 +23,18 @@ public class PostService {
     private PostPictureRepository postPictureRepository;
     @Autowired
     private StarRepository starRepository;
+    @Autowired
+    private LikeRepository likeRepository;
     private Sort sort;
-    public boolean starexist(String userId,String postId){
+    public boolean starExist(String userId,String postId){
         if (starRepository.findByPostIdAndUserId(postId,userId)!=null){
             return true;
         }else return false;
-
+    }
+    public boolean likeExist(String userId,String postId){
+        if (likeRepository.findByPostIdAndUserId(postId,userId)!=null){
+            return true;
+        }else return false;
     }
     //更新post(不添加图片)
 
@@ -59,6 +65,17 @@ public class PostService {
     public void saveStar(String postId,String userId){
 
         starRepository.save(new Star(postId,userId,UUID.randomUUID().toString()));
+    }
+    public void deleteStar(String postId,String userId){
+        starRepository.deleteByPostIdAndUserId(postId,userId);
+    }
+    //添加点赞
+    public void saveLike(String postId,String userId){
+        likeRepository.save(new Like(postId,userId,UUID.randomUUID().toString()));
+    }
+    //删除点赞
+    public void deleteLike(String postId,String userId){
+        likeRepository.deleteByPostIdAndUserId(postId,userId);
     }
     @Transactional
     public void deletePost(String postId){

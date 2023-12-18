@@ -1,6 +1,7 @@
     package com.example.android.controller;
     import com.example.android.entity.PostItem;
     import com.example.android.entity.PostWithUserInfo;
+    import com.example.android.entity.LikeAndStarStatusResponse;
     import com.example.android.service.PostService;
     import com.example.android.service.UserInfoService;
     import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,6 @@
     import org.springframework.web.bind.annotation.*;
     import org.springframework.web.multipart.MultipartFile;
 
-    import javax.transaction.Transactional;
     import java.io.*;
     import java.nio.file.Files;
     import java.nio.file.Path;
@@ -112,8 +112,9 @@
         public String starPost(@RequestParam("postId") String postId,
                              @RequestParam("userId") String userId
                             ){
-            if(postService.starexist(userId,postId)){
-                //收藏已存在
+            if(postService.starExist(userId,postId)){
+                //收藏已存在,执行取消收藏
+                postService.deleteStar(postId,userId);
                 return "收藏存在";
             }else {
                 //收藏不存在，执行收藏代码
@@ -121,14 +122,41 @@
                 return "不存在";
             }
         }
+        @PostMapping("/like")
+        public String likePost(@RequestParam("postId") String postId,
+                             @RequestParam("userId") String userId
+                            ){
+            if(postService.likeExist(userId,postId)){
+                //点赞已存在,执行取消点赞
+                postService.deleteLike(postId,userId);
+                return "删除";
+            }else {
+                //点赞不存在，执行点赞代码
+                postService.saveLike(postId,userId);
+                return "添加";
+            }
+        }
         @GetMapping("/deletePost")
-        @Transactional
         public String deletePost(String postId){
             postService.deletePost(postId);
             return "删除成功";
         }
+        @GetMapping("/getLikeAndStarStatus")
+        public LikeAndStarStatusResponse getLikeAndStarStatus(@RequestParam("postId") String postId,
+                                                              @RequestParam("userId") String userId){
+            int likeStatus = 0;
+            int starStatus = 0;
+            if(postService.starExist(userId,postId)){
+                likeStatus = 1;
+            }
+            if(postService.likeExist(userId,postId)){
+                starStatus = 1;
+            }
+            //向客户端返回点赞和收藏状态
+            return new LikeAndStarStatusResponse(likeStatus,starStatus);
+
+        }
         @PostMapping("/updatewithnewimage")
-        @Transactional
         public void updatePost(@RequestParam("postId") String postId,
                                @RequestParam("deletedPicturePaths") List<String> deletedPicturePaths,
                                @RequestPart("post") PostItem post,
@@ -185,7 +213,6 @@
             postService.deleteimage(deletedPicturePaths);
         }
         @PostMapping("/updatewithoutnewimage")
-        @Transactional
         public void updatePostWithoutPicture(@RequestParam("postId") String postId,
                                              @RequestParam("deletedPicturePaths") List<String> deletedPicturePaths,
                                              @RequestPart("post") PostItem post){
@@ -197,4 +224,5 @@
             PostItem post = postService.findById(postId);
             return new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId()));
         }
+
     }
