@@ -121,6 +121,27 @@ public class TravelsService {
 
     }
 
+    public List<ShowTravel> listTravels(String userId) {
+        List<ShowTravel> showTravelsList = new ArrayList<>();
+        //首先根据userId查找到所有的travel
+        List<Travel> travels = travelRepository.findTravelsByUserId(userId);
+        for (Travel travel : travels){
+            ShowTravel showTravel = new ShowTravel();
+            List<String> images = new ArrayList<>();
+            //通过travelId获取placeId列表
+            List<TravelPlace> travelPlaces = travelPlaceRepository.findTravelPlacesByTravelId(travel.getTravelId());
+            //遍历所有的placeId，并添加第一张照片至images中
+            for(TravelPlace travelPlace : travelPlaces){
+                images.add(travelPictureRepository.findTravelPicturesByPlaceId(travelPlace.getPlaceId()).get(0).getPicturePath());
+            }
+            showTravel.setUserId(travel.getUserId());
+            showTravel.setTravelId(travel.getTravelId());
+            showTravel.setTravelName(travel.getTravelName());
+            showTravel.setImages(images);
+            showTravelsList.add(showTravel);
+        }
+        return showTravelsList;
+    }
     //这个方法用于实现将数据库中相应的旅行的日期数据和图片数据都取出来，是多表查询操作
     public List<ShowTravel> showTravels(String userId) {
 

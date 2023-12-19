@@ -7,10 +7,7 @@ import com.example.android.entity.TravelRecord;
 import com.example.android.service.TravelsService;
 import com.example.android.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -65,22 +62,14 @@ public class TravelController {
     }
 
     //这个方法用于实现将对应旅游的信息传递到前端，接收到travelId，返回所有的该次旅游的数据
-    @PostMapping("/showATravel")
-    public Result<List<TravelRecord>> showATravel(String travelId){
-        Result<List<TravelRecord>> result = new Result<>();
-        try{
-            List<TravelRecord> travelRecords = travelsService.showATravel(travelId);
-            result.setData(travelRecords);
-            result.setCode("200");
-            result.setMsg("查找成功");
-        }catch(Exception e){
-            result.setData(null);
-            result.setCode("500");
-            result.setMsg("查找失败");
-        }
-        return result;
+    @GetMapping("/showATravel")
+    public List<TravelRecord> showATravel(String travelId){
+        return travelsService.showATravel(travelId);
     }
-
+    @GetMapping("/getReview")
+    public List<ShowTravel> showTravelList(String userId){
+        return travelsService.listTravels(userId);
+    };
 
 
 

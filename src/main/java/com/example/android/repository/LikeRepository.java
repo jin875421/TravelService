@@ -13,4 +13,5 @@ public interface LikeRepository extends JpaRepository<Likes, String>, JpaSpecifi
 
     @Query(value = "select post_id from star where user_id =?1",nativeQuery = true)
     List<String> findPostIdByUserId(String userId);
+    int countByPostId(String postId);
 }

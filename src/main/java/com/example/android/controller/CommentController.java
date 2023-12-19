@@ -7,10 +7,7 @@ import com.example.android.service.CommentService;
 import com.google.gson.Gson;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,7 +29,10 @@ public class CommentController {
 
         return json;
     }
-
+    @GetMapping("/getCommentCount")
+    public int getCommentCount(String postId){
+        return service.getReturnCommentList(postId).size();
+    }
     @PostMapping("/getReturnCommendRespondList")
     public String getCommendRespond(@RequestBody String commentId) {
         String theCommentId = commentId;

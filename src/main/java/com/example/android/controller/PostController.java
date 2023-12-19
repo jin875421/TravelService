@@ -225,5 +225,8 @@
             PostItem post = postService.findById(postId);
             return new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId()));
         }
-
+        @GetMapping("/getLikeCount")
+        public int getLikeCount(String postId){
+            return postService.getLikeCount(postId);
+        }
     }

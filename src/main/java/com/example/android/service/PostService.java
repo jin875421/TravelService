@@ -159,4 +159,8 @@ public class PostService {
         }
         return postItem;
     }
+
+    public int getLikeCount(String postId) {
+        return likeRepository.countByPostId(postId);
+    }
 }
