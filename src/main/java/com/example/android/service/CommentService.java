@@ -28,17 +28,14 @@ public class CommentService {
     //上传评论，将评论内容保存到数据库中
     public Comment addComment(Comment comment){
         Comment save = commentRepository.save(comment);
-        logger.info("保存到数据库中的评论"+save);
         return save;
     }
 
     //获取要显示的评论的信息，将评论内容和用户信息结合起来
     public List<ReturnComment> getReturnCommentList(String postId){
-        System.out.println("service的getReturnCommentList执行");
         List<ReturnComment> returnCommentList = new ArrayList<>();
         sort = Sort.by(Sort.Direction.DESC, "time");
         List<Comment> commentList = commentRepository.findByPostId(postId, sort);
-        System.out.println("commentList为"+commentList.size());
         //遍历帖子下的所有评论内容
         for(Comment comment:commentList) {
             if (comment.getParentId() != null)
@@ -53,7 +50,6 @@ public class CommentService {
                         commentRespond.getTime(),
                         getAvatarByUserId(commentRespond.getUserId())
                 );
-                System.out.println("returnCommentRespond"+returnCommentRespond);
                 returnCommentRespondList.add(returnCommentRespond);
             }
             //将评论信息和发布者信息结合起来
@@ -66,7 +62,6 @@ public class CommentService {
                     comment.getUserId(),
                     returnCommentRespondList
             );
-            System.out.println("returnComment为"+returnComment);
             returnCommentList.add(returnComment);
         }
         return returnCommentList;
@@ -91,7 +86,6 @@ public class CommentService {
     //查询用户名
     public String getUserNameByUserId(String userId) {
         UserInfo userInfo = userInfoRepository.findByUserId(userId);
-        System.out.println("通过Id:"+userInfo.getUserId()+"查询到的用户名"+userInfo.getUserName());
         String userName = userInfo.getUserName();
         return userName;
     }
@@ -99,7 +93,6 @@ public class CommentService {
     //查询头像
     public String getAvatarByUserId(String userId) {
         UserInfo userInfo = userInfoRepository.findByUserId(userId);
-        System.out.println("通过Id:"+userInfo.getUserId()+"查询到的头像"+userInfo.getAvatar());
         String avatar = userInfo.getAvatar();
         return avatar;
     }

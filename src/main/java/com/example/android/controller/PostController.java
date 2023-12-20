@@ -91,8 +91,6 @@
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
-                        // 处理异常
-                        throw new RuntimeException("文件分片上传失败.");
                     }
                 }
                 post.setPicturePath(fileNames);
@@ -151,8 +149,6 @@
             if(postService.likeExist(userId,postId)){
                 likeStatus = 1;
             }
-            System.out.println(likeStatus);
-            System.out.println(starStatus);
             //向客户端返回点赞和收藏状态
             return new LikeAndStarStatusResponse(likeStatus,starStatus);
 
@@ -203,8 +199,6 @@
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
-                        // 处理异常
-                        throw new RuntimeException("文件分片上传失败.");
                     }
                 }
                 post.setPicturePath(fileNames);

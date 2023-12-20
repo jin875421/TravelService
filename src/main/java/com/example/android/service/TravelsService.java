@@ -63,7 +63,6 @@ public class TravelsService {
         }
         //最后返回list
         return list;
-
         //TODO 目前逻辑上看来没有什么问题，但是需要在返回和接收数据的时候将数据封装到vo类里
     }
 
@@ -87,7 +86,7 @@ public class TravelsService {
             travel.setTravelName(travelRecord.getTravelName());
             //将该数据添加到数据库中
             //在添加数据库的时候添加不进去！！！！！！！！！！！！！！！！！！！！！！！！！ ！！！！！！！！！！！！！！！
-            Travel saveTravel = travelRepository.save(travel);
+            travelRepository.save(travel);
         }
 
         //----------------------------------------------------------------------------------
@@ -95,12 +94,11 @@ public class TravelsService {
 //        String placeId = UUID.randomUUID().toString();
 //        LocalDate currentDate = LocalDate.now();
         //在这里，placeId应该不会重复存储到数据库
-        Date currentDate = new Date();
         travelPlace.setTravelId(travelRecord.getTravelId());
         travelPlace.setPlaceId(travelRecord.getPlaceId());
         travelPlace.setPlaceName(travelRecord.getPlaceName());
         travelPlace.setTravelExperience(travelRecord.getContent());
-        travelPlace.setTravelDate(currentDate);
+        travelPlace.setTravelDate(travelRecord.getDate());
         //将该数据添加到数据库中
         travelPlaceRepository.save(travelPlace);
         //----------------------------------------------------------------------------------

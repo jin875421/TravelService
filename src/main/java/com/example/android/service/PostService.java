@@ -132,7 +132,6 @@ public class PostService {
         List<PostItem> postItems = new ArrayList<>();
         List<String> postId = new ArrayList<>();
         postId = starRepository.findPostIdByUserId(userId);
-//        sort = Sort.by(Sort.Direction.DESC, "createTime");
         postList = postRepository.findAllById(postId);
         for (Post post:postList){
             List<String> picturePaths = new ArrayList<>();
