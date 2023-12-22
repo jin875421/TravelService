@@ -4,9 +4,11 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.List;
-
+@Table(name = "tra_reco_attraction")
 @Entity
 @Data
 public class RecoAttraction {
@@ -57,14 +59,14 @@ public class RecoAttraction {
     private Double latitude;
 
     @Transient
-    private List<RecoAttractionImg> recoAttractionImgList;
+    private List<String> imgUrls = new ArrayList<>();
 
-    public List<RecoAttractionImg> getTraRecoAttractionImgList() {
-        return recoAttractionImgList;
+    public List<String> getImgUrls() {
+        return imgUrls;
     }
 
-    public void setTraRecoAttractionImgList(List<RecoAttractionImg> traRecoAttractionImgList) {
-        this.recoAttractionImgList = recoAttractionImgList;
+    public void setImgUrls(List<String> imgUrls) {
+        this.imgUrls = imgUrls;
     }
 
     public void setAttractionId(String attractionId) {
@@ -151,7 +153,6 @@ public class RecoAttraction {
                 ", attractionDesc='" + attractionDesc + '\'' +
                 ", longitude=" + longitude +
                 ", latitude=" + latitude +
-                ", recoAttractionImgList=" + recoAttractionImgList +
                 '}';
     }
 }

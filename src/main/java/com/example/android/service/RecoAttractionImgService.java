@@ -14,4 +14,8 @@ public class RecoAttractionImgService {
     public List<RecoAttractionImg> getRecoAttractionImgList(){
         return recoAttractionImgRepository.findAll();
     }
+
+    public List<RecoAttractionImg> findByAttractionId(String attractionId) {
+        return recoAttractionImgRepository.findByAttractionId(attractionId);
+    }
 }

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/recoattraction")
+@RequestMapping("/recoAttraction")
 public class RecoAttractionController {
     @Autowired
     private RecoAttractionService recoAttractionService;
@@ -22,14 +22,7 @@ public class RecoAttractionController {
     @GetMapping("/getRecoAttractionList")
     public List<RecoAttraction> getRecoAttractionList(){
         List<RecoAttraction> recoAttractionList = recoAttractionService.getRecoAttractionList();
-        List<RecoAttractionImg> recoAttractionImgList = recoAttractionImgService.getRecoAttractionImgList();
-        for (RecoAttraction recoAttraction : recoAttractionList) {
-            for (RecoAttractionImg recoAttractionImg : recoAttractionImgList) {
-                if (recoAttraction.getAttractionId().equals(recoAttractionImg.getAttractionId())){
-                    recoAttraction.getTraRecoAttractionImgList().add(recoAttractionImg);
-                }
-            }
-        }
+        System.out.println(recoAttractionList);
         return recoAttractionList;
     }
 }

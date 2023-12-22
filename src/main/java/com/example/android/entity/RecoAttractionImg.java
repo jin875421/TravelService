@@ -4,7 +4,9 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Table(name = "tra_reco_attraction_img")
 @Entity
 @Data
 public class RecoAttractionImg {
