@@ -50,7 +50,8 @@ public class TravelController {
     //TODO 这个方法需要修改，还没有完成！！！！！！！！！！！！！！！！！！需要和前端协调一些东西
 //    @PostMapping("/createTravelRecoed")
     public int createTravelRecoed(@RequestBody TravelRecord travelRecord){
-        int result = travelsService.createTravelRecoed(travelRecord);        //TODO 定义返回信息的实体类，和前端协调0
+        int result = travelsService.createTravelRecoed(travelRecord);
+        //TODO 定义返回信息的实体类，和前端协调0
         return result;
     }
     private String uploadDirectory = "D:\\Upload\\travelpictures\\";

@@ -34,6 +34,15 @@
             }
             return postWithUserInfos;
         }
+        @GetMapping ("/getMypostlist")
+        public List<PostWithUserInfo> getMyPostList(@RequestParam String userId){
+            List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
+            List<PostItem> posts = postService.findMyPostList(userId);
+            for (PostItem post:posts){
+                postWithUserInfos.add(new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId())));
+            }
+            return postWithUserInfos;
+        }
         @GetMapping("/search")
         public List<PostWithUserInfo> searchPostList(@RequestParam String searchText){
             List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
