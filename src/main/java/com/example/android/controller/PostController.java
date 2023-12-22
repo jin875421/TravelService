@@ -34,6 +34,15 @@
             }
             return postWithUserInfos;
         }
+        @GetMapping ("/getMypostlist")
+        public List<PostWithUserInfo> getMyPostList(@RequestParam String userId){
+            List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
+            List<PostItem> posts = postService.findMyPostList(userId);
+            for (PostItem post:posts){
+                postWithUserInfos.add(new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId())));
+            }
+            return postWithUserInfos;
+        }
         @GetMapping("/search")
         public List<PostWithUserInfo> searchPostList(@RequestParam String searchText){
             List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
@@ -91,8 +100,6 @@
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
-                        // 处理异常
-                        throw new RuntimeException("文件分片上传失败.");
                     }
                 }
                 post.setPicturePath(fileNames);
@@ -151,8 +158,6 @@
             if(postService.likeExist(userId,postId)){
                 likeStatus = 1;
             }
-            System.out.println(likeStatus);
-            System.out.println(starStatus);
             //向客户端返回点赞和收藏状态
             return new LikeAndStarStatusResponse(likeStatus,starStatus);
 
@@ -203,8 +208,6 @@
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
-                        // 处理异常
-                        throw new RuntimeException("文件分片上传失败.");
                     }
                 }
                 post.setPicturePath(fileNames);

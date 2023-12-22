@@ -132,7 +132,6 @@ public class PostService {
         List<PostItem> postItems = new ArrayList<>();
         List<String> postId = new ArrayList<>();
         postId = starRepository.findPostIdByUserId(userId);
-//        sort = Sort.by(Sort.Direction.DESC, "createTime");
         postList = postRepository.findAllById(postId);
         for (Post post:postList){
             List<String> picturePaths = new ArrayList<>();
@@ -145,7 +144,21 @@ public class PostService {
         }
         return postItems;
     }
-
+    public List<PostItem> findMyPostList(String userId) {
+        List<Post> postList;
+        List<PostItem> postItems = new ArrayList<>();
+        postList = postRepository.findByUserId(userId);
+        for (Post post:postList){
+            List<String> picturePaths = new ArrayList<>();
+            for (PostPicture postPicture:postPictureRepository.findByPostId(post.getPostId())){
+                picturePaths.add(postPicture.getPicturePath());
+            }
+            PostContent postContent = postContentRepository.findByPostId(post.getPostId());
+            PostItem postItem = new PostItem(post.getPostId(),postContent.getPostTitle(),postContent.getPostContent(),post.getUserId(),post.getCreateTime(),picturePaths);
+            postItems.add(postItem);
+        }
+        return postItems;
+    }
     public PostItem findById(String postId) {
         Post post = postRepository.findById(postId).get();
         PostItem postItem = new PostItem();
