@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.List;
 
 @Entity
@@ -55,6 +56,7 @@ public class RecoAttraction {
      */
     private Double latitude;
 
+    @Transient
     private List<RecoAttractionImg> recoAttractionImgList;
 
     public List<RecoAttractionImg> getTraRecoAttractionImgList() {
