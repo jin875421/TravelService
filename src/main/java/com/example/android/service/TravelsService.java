@@ -52,11 +52,13 @@ public class TravelsService {
             ShowPicture sp = new ShowPicture();
 
             Date date = travelPlace.getTravelDate();
+            String placrName = travelPlace.getPlaceName();
             //然后这里再根据id找到所有的照片
             List<TravelPicture> travelPictures = travelPictureRepository.findTravelPicturesByPlaceId(travelPlace.getPlaceId());
             List<String> picturePachs= travelPictures.stream().map(p -> p.getPicturePath()).collect(Collectors.toList());
             //然后将这两样数据封装到实体类的对象中
             sp.setTravelDate(date);
+            sp.setPlaceName(placrName);
             sp.setPicturePath(picturePachs);
             //然后再将这个实体类对象sp放到list中
             list.add(sp);
@@ -81,14 +83,24 @@ public class TravelsService {
 //        String travelId = UUID.randomUUID().toString();
 //        先来检查数据库中有没有对应旅程的id
         //根据id来查询条例，看有没有相关数据
-        if(!travelRepository.findById(travelRecord.getTravelId()).isPresent()){
-            travel.setTravelId(travelRecord.getTravelId());
-            travel.setUserId(travelRecord.getUserId());
-            travel.setTravelName(travelRecord.getTravelName());
-            //将该数据添加到数据库中
-            //在添加数据库的时候添加不进去！！！！！！！！！！！！！！！！！！！！！！！！！ ！！！！！！！！！！！！！！！
-            Travel saveTravel = travelRepository.save(travel);
-        }
+//        if(!travelRepository.findById(travelRecord.getTravelId()).isPresent()){
+//            travel.setTravelId(travelRecord.getTravelId());
+//            travel.setUserId(travelRecord.getUserId());
+//            travel.setTravelName(travelRecord.getTravelName());
+//            //将该数据添加到数据库中
+//            //在添加数据库的时候添加不进去！！！！！！！！！！！！！！！！！！！！！！！！！ ！！！！！！！！！！！！！！！
+////            Travel saveTravel = travelRepository.save(travel);
+//            travelRepository.save(travel);
+//        }
+
+
+        travel.setTravelId(travelRecord.getTravelId());
+        travel.setUserId(travelRecord.getUserId());
+        travel.setTravelName(travelRecord.getTravelName());
+        //将该数据添加到数据库中
+        //在添加数据库的时候添加不进去！！！！！！！！！！！！！！！！！！！！！！！！！ ！！！！！！！！！！！！！！！
+//            Travel saveTravel = travelRepository.save(travel);
+        travelRepository.save(travel);
 
         //----------------------------------------------------------------------------------
         //使用UUID来分配placeId,并且分配当前的date
