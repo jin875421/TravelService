@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, String>, JpaSpecificationExecutor<Comment> {
     List<Comment> findByPostId(String postId, Sort sort);
+    List<Comment> findByParentId(String parentId, Sort sort);
+    void deleteByPostId(String postId);
 }

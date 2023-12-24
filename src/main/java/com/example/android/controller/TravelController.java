@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/travel")
@@ -55,10 +54,10 @@ public class TravelController {
 
     }
     //这个方法用于新增旅游记录信息，用于将一次传过来的包含在一次旅程中的地点一个地点记录保存到数据库中
-//    //TODO 这个方法需要修改，还没有完成！！！！！！！！！！！！！！！！！！需要和前端协调一些东西
-    @PostMapping("/createTravelRecoedTest")
+    //TODO 这个方法需要修改，还没有完成！！！！！！！！！！！！！！！！！！需要和前端协调一些东西
+    @PostMapping("/createTravelRecoed")
     public int createTravelRecoed(@RequestBody TravelRecord travelRecord){
-        int result = travelsService.createTravelRecoed(travelRecord);        //TODO 定义返回信息的实体类，和前端协调
+        int result = travelsService.createTravelRecoed(travelRecord);        //TODO 定义返回信息的实体类，和前端协调0
         return result;
     }
 
@@ -161,32 +160,19 @@ public class TravelController {
     }
 
     //这个方法用于实现将对应旅游的信息传递到前端，接收到travelId，返回所有的该次旅游的数据
-    @PostMapping("/showATravel")
-    public Result<List<TravelRecord>> showATravel(String travelId){
-        Result<List<TravelRecord>> result = new Result<>();
-        try{
-            List<TravelRecord> travelRecords = travelsService.showATravel(travelId);
-            result.setData(travelRecords);
-            result.setCode("200");
-            result.setMsg("查找成功");
-        }catch(Exception e){
-            result.setData(null);
-            result.setCode("500");
-            result.setMsg("查找失败");
-        }
-        return result;
+    @GetMapping("/showATravel")
+    public List<TravelRecord> showATravel(String travelId){
+        return travelsService.showATravel(travelId);
     }
-
+    @GetMapping("/getReview")
+    public List<ShowTravel> showTravelList(String userId){
+        return travelsService.listTravels(userId);
+    };
 
 
 
 
 }
-
-
-
-
-
 
 
 
