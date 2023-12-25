@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/travel")
@@ -32,26 +33,9 @@ public class TravelController {
     //这个方法用于实现根据用户传递过来的id来查找到所有的照片地址和相应的日期，然后返回成一个list列表
     @PostMapping("/showPictures")
     public List<ShowPicture> showPictures(String userId){
-//        Result<List<ShowPicture>> result = new Result<List<ShowPicture>>();
-//        try{
-//            //这里是查找成功的情况
-//            //这里调用service方法，通过id找到包含照片信息和对应日期的list列表
-//            List<ShowPicture>  list = travelsService.getPicturesShowedByUserId(userId);
-//            result.setData(list);
-//            result.setCode("200");
-//            result.setMsg("照片查找成功");
-//        }catch (Exception e){
-//            result.setData(null);
-//            result.setCode("500");
-//            result.setMsg("查找失败");
-//        }
-//        return result;
-
         List<ShowPicture> list = new ArrayList<>();
         list = travelsService.getPicturesShowedByUserId(userId);
         return list;
-
-
 
     }
     //这个方法用于新增旅游记录信息，用于将一次传过来的包含在一次旅程中的地点一个地点记录保存到数据库中
@@ -61,14 +45,6 @@ public class TravelController {
         int result = travelsService.createTravelRecoed(travelRecord);        //TODO 定义返回信息的实体类，和前端协调0
         return result;
     }
-
-
-
-
-
-
-
-
 
     private String uploadDirectory = "D:\\Upload\\travelpictures\\";
     @PostMapping("/createTravelRecoed")
@@ -132,15 +108,6 @@ public class TravelController {
         //现在将数据放到数据库中
         travelsService.createTravelRecoed(travelRecord);
     }
-
-
-
-
-
-
-
-
-
 
     //这个方法用于实现收到userId，返回所有的旅行信息的功能
     @PostMapping("/showTravels")
