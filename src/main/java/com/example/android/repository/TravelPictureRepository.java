@@ -11,6 +11,8 @@ public interface TravelPictureRepository extends JpaRepository<TravelPicture, St
     //在这里写一个方法，传入placeId，查找到所有的TravelPicture
     public List<TravelPicture> findTravelPicturesByPlaceId(String placeId);
 
+    void deleteByPlaceId(String s);
+
     //在这里写一个方法，通过找到的
 
 }

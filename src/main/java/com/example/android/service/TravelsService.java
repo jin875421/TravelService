@@ -242,6 +242,16 @@ public class TravelsService {
 
         return list;
     }
+
+    public void deleteTravel(String travelId) {
+        travelRepository.deleteById(travelId);
+        List<TravelPlace> placeId = travelPlaceRepository.findTravelPlaceByTravelId(travelId);
+        for (TravelPlace s : placeId) {
+            s.getTravelId();
+            travelPictureRepository.deleteByPlaceId(s.getPlaceId());
+        }
+        travelPlaceRepository.deleteByTravelId(travelId);
+    }
 }
 
 

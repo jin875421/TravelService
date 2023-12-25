@@ -12,4 +12,8 @@ public interface TravelPlaceRepository extends JpaRepository<TravelPlace, String
 
     //通过travelId找到所有的travelPlace
     List<TravelPlace> findTravelPlacesByTravelId(String travelId);
+
+    void deleteByTravelId(String travelId);
+
+    List<TravelPlace> findTravelPlaceByTravelId(String travelId);
 }
