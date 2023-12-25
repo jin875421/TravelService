@@ -39,12 +39,6 @@ public class TravelController {
 
     }
     //这个方法用于新增旅游记录信息，用于将一次传过来的包含在一次旅程中的地点一个地点记录保存到数据库中
-    //TODO 这个方法需要修改，还没有完成！！！！！！！！！！！！！！！！！！需要和前端协调一些东西
-    @PostMapping("/createTravelRecoed")
-    public int createTravelRecoed(@RequestBody TravelRecord travelRecord){
-        int result = travelsService.createTravelRecoed(travelRecord);        //TODO 定义返回信息的实体类，和前端协调0
-        return result;
-    }
 
     private String uploadDirectory = "D:\\Upload\\travelpictures\\";
     @PostMapping("/createTravelRecoed")
