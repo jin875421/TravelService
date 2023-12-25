@@ -52,17 +52,20 @@ public class TravelsService {
             ShowPicture sp = new ShowPicture();
 
             Date date = travelPlace.getTravelDate();
+            String placrName = travelPlace.getPlaceName();
             //然后这里再根据id找到所有的照片
             List<TravelPicture> travelPictures = travelPictureRepository.findTravelPicturesByPlaceId(travelPlace.getPlaceId());
             List<String> picturePachs= travelPictures.stream().map(p -> p.getPicturePath()).collect(Collectors.toList());
             //然后将这两样数据封装到实体类的对象中
             sp.setTravelDate(date);
+            sp.setPlaceName(placrName);
             sp.setPicturePath(picturePachs);
             //然后再将这个实体类对象sp放到list中
             list.add(sp);
         }
         //最后返回list
         return list;
+
         //TODO 目前逻辑上看来没有什么问题，但是需要在返回和接收数据的时候将数据封装到vo类里
     }
 
@@ -80,25 +83,36 @@ public class TravelsService {
 //        String travelId = UUID.randomUUID().toString();
 //        先来检查数据库中有没有对应旅程的id
         //根据id来查询条例，看有没有相关数据
-        if(!travelRepository.findById(travelRecord.getTravelId()).isPresent()){
-            travel.setTravelId(travelRecord.getTravelId());
-            travel.setUserId(travelRecord.getUserId());
-            travel.setTravelName(travelRecord.getTravelName());
-            //将该数据添加到数据库中
-            //在添加数据库的时候添加不进去！！！！！！！！！！！！！！！！！！！！！！！！！ ！！！！！！！！！！！！！！！
-            travelRepository.save(travel);
-        }
+//        if(!travelRepository.findById(travelRecord.getTravelId()).isPresent()){
+//            travel.setTravelId(travelRecord.getTravelId());
+//            travel.setUserId(travelRecord.getUserId());
+//            travel.setTravelName(travelRecord.getTravelName());
+//            //将该数据添加到数据库中
+//            //在添加数据库的时候添加不进去！！！！！！！！！！！！！！！！！！！！！！！！！ ！！！！！！！！！！！！！！！
+////            Travel saveTravel = travelRepository.save(travel);
+//            travelRepository.save(travel);
+//        }
+
+
+        travel.setTravelId(travelRecord.getTravelId());
+        travel.setUserId(travelRecord.getUserId());
+        travel.setTravelName(travelRecord.getTravelName());
+        //将该数据添加到数据库中
+        //在添加数据库的时候添加不进去！！！！！！！！！！！！！！！！！！！！！！！！！ ！！！！！！！！！！！！！！！
+//            Travel saveTravel = travelRepository.save(travel);
+        travelRepository.save(travel);
 
         //----------------------------------------------------------------------------------
         //使用UUID来分配placeId,并且分配当前的date
 //        String placeId = UUID.randomUUID().toString();
 //        LocalDate currentDate = LocalDate.now();
         //在这里，placeId应该不会重复存储到数据库
+        Date currentDate = new Date();
         travelPlace.setTravelId(travelRecord.getTravelId());
         travelPlace.setPlaceId(travelRecord.getPlaceId());
         travelPlace.setPlaceName(travelRecord.getPlaceName());
         travelPlace.setTravelExperience(travelRecord.getContent());
-        travelPlace.setTravelDate(travelRecord.getDate());
+        travelPlace.setTravelDate(currentDate);
         //将该数据添加到数据库中
         travelPlaceRepository.save(travelPlace);
         //----------------------------------------------------------------------------------
@@ -119,27 +133,6 @@ public class TravelsService {
 
     }
 
-    public List<ShowTravel> listTravels(String userId) {
-        List<ShowTravel> showTravelsList = new ArrayList<>();
-        //首先根据userId查找到所有的travel
-        List<Travel> travels = travelRepository.findTravelsByUserId(userId);
-        for (Travel travel : travels){
-            ShowTravel showTravel = new ShowTravel();
-            List<String> images = new ArrayList<>();
-            //通过travelId获取placeId列表
-            List<TravelPlace> travelPlaces = travelPlaceRepository.findTravelPlacesByTravelId(travel.getTravelId());
-            //遍历所有的placeId，并添加第一张照片至images中
-            for(TravelPlace travelPlace : travelPlaces){
-                images.add(travelPictureRepository.findTravelPicturesByPlaceId(travelPlace.getPlaceId()).get(0).getPicturePath());
-            }
-            showTravel.setUserId(travel.getUserId());
-            showTravel.setTravelId(travel.getTravelId());
-            showTravel.setTravelName(travel.getTravelName());
-            showTravel.setImages(images);
-            showTravelsList.add(showTravel);
-        }
-        return showTravelsList;
-    }
     //这个方法用于实现将数据库中相应的旅行的日期数据和图片数据都取出来，是多表查询操作
     public List<ShowTravel> showTravels(String userId) {
 
