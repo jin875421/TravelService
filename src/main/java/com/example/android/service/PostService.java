@@ -87,6 +87,7 @@ public class PostService {
         commentRepository.deleteByPostId(postId);
     }
     public List<PostItem> searchPost(String searchText){
+        sort = Sort.by(Sort.Direction.DESC, "createTime");
         List<Post> postList = postRepository.findAll(sort);
         List<PostItem> postItems = new ArrayList<>();
         for (Post post:postList){

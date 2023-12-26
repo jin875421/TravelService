@@ -232,4 +232,11 @@
         public int getLikeCount(String postId){
             return postService.getLikeCount(postId);
         }
+        @GetMapping("/deletePost")
+        @Transactional
+        public String deletePost(String postId){
+            postService.deletePost(postId);
+            return "删除成功";
+        }
+
     }
