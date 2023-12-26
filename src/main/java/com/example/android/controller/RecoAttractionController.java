@@ -1,5 +1,6 @@
 package com.example.android.controller;
 
+import com.aliyuncs.utils.StringUtils;
 import com.example.android.entity.RecoAttraction;
 import com.example.android.entity.RecoAttractionImg;
 import com.example.android.service.RecoAttractionImgService;
@@ -18,41 +19,61 @@ import java.util.concurrent.ThreadLocalRandom;
 @RestController
 @RequestMapping("/recoAttraction")
 public class RecoAttractionController {
-    static List<RecoAttraction> dailyRecoAttractionList = new ArrayList<>();
+    public static List<RecoAttraction> dailyRecoAttractionList = new ArrayList<>();
     @Autowired
     private RecoAttractionService recoAttractionService;
     @Autowired
     private RecoAttractionImgService recoAttractionImgService;
-    static boolean todayFirstGet = true;
+//    static boolean todayFirstGet = true;
     @GetMapping("/getRecoAttractionList")
     public List<RecoAttraction> getRecoAttractionList(){
-        if (todayFirstGet){
-            List<RecoAttraction> recoAttractionList = recoAttractionService.getRecoAttractionList();
-            System.out.println(recoAttractionList);
-            int [] randomArray = new int[2];
-            // 使用循环生成随机数并放入数组
-            for (int i = 0; i < 2; i++) {
-                int num = ThreadLocalRandom.current().nextInt(0, recoAttractionList.size());
-                // 使用循环检查随机数是否已经存在于数组中
-                boolean contains = false;
-                for (int j = 0; j < i; j++) {
-                    if (randomArray[j] == num) {
-                        contains = true;
-                        break;
-                    }
-                }
-                // 如果随机数已经存在于数组中，则重新生成
-                if (contains) {
-                    i--;
-                } else {
-                    randomArray[i] = num;
-                    System.out.println(randomArray[i]);
-                }
+//        if (todayFirstGet){
+//            List<RecoAttraction> recoAttractionList = recoAttractionService.getRecoAttractionList();
+//            System.out.println(recoAttractionList);
+//            int [] randomArray = new int[2];
+//            // 使用循环生成随机数并放入数组
+//            for (int i = 0; i < 2; i++) {
+//                int num = ThreadLocalRandom.current().nextInt(0, recoAttractionList.size());
+//                // 使用循环检查随机数是否已经存在于数组中
+//                boolean contains = false;
+//                for (int j = 0; j < i; j++) {
+//                    if (randomArray[j] == num) {
+//                        contains = true;
+//                        break;
+//                    }
+//                }
+//                // 如果随机数已经存在于数组中，则重新生成
+//                if (contains) {
+//                    i--;
+//                } else {
+//                    randomArray[i] = num;
+//                    System.out.println(randomArray[i]);
+//                }
+//            }
+//            for (int i:randomArray){
+//                dailyRecoAttractionList.add(recoAttractionList.get(i));
+//            }
+//            todayFirstGet = false;
+//        }
+        for (RecoAttraction r:dailyRecoAttractionList){
+            if(StringUtils.isEmpty(r.getAttractionName())){
+                r.setAttractionName("未知景点");
             }
-            for (int i:randomArray){
-                dailyRecoAttractionList.add(recoAttractionList.get(i));
+            if(StringUtils.isEmpty(r.getCountry())){
+                r.setCountry("");
             }
-            todayFirstGet = false;
+            if(StringUtils.isEmpty(r.getProvince())){
+                r.setProvince("");
+            }
+            if(StringUtils.isEmpty(r.getCity())){
+                r.setCity("");
+            }
+            if(StringUtils.isEmpty(r.getAddress())){
+                r.setAddress("");
+            }
+            if(StringUtils.isEmpty(r.getAttractionDesc())){
+                r.setAttractionDesc("暂无景点描述");
+            }
         }
         System.out.println(dailyRecoAttractionList);
         return dailyRecoAttractionList;

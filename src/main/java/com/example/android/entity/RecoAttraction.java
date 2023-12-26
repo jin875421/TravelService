@@ -153,6 +153,7 @@ public class RecoAttraction {
                 ", attractionDesc='" + attractionDesc + '\'' +
                 ", longitude=" + longitude +
                 ", latitude=" + latitude +
-                '}';
+                ", imgUrls=" + imgUrls +
+                '}' ;
     }
 }
