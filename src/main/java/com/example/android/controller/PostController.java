@@ -5,6 +5,8 @@
     import com.example.android.service.PostService;
     import com.example.android.service.UserInfoService;
     import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.data.domain.PageRequest;
+    import org.springframework.data.domain.Sort;
     import org.springframework.util.FileCopyUtils;
     import org.springframework.web.bind.annotation.*;
     import org.springframework.web.multipart.MultipartFile;
@@ -108,9 +110,10 @@
         }
         //帖子获取
         @GetMapping("/getpostlist")
-        public List<PostWithUserInfo> getPostList(){
+        public List<PostWithUserInfo> getPostList(@RequestParam int page){
             List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
-            List<PostItem> posts = postService.findPostList();
+            Sort sort = Sort.by(Sort.Direction.DESC, "createTime");
+            List<PostItem> posts = postService.findPostList(PageRequest.of(page,10,sort));
             for (PostItem post:posts){
                 postWithUserInfos.add(new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId())));
             }

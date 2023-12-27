@@ -189,7 +189,6 @@ public class TravelController {
                     e.printStackTrace();
                 }
             }
-
             //现在已经将图片保存好了，并且图片名称是fileNames列表，现在要将这些数据放到数据库中
             travelRecord.setImage(fileNames);
         }

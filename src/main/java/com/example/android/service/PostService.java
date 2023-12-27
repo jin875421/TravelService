@@ -3,6 +3,8 @@ package com.example.android.service;
 import com.example.android.entity.*;
 import com.example.android.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -111,11 +113,11 @@ public class PostService {
         }
         postContentRepository.save(new PostContent(UUID.randomUUID().toString(),post.getPostId(),post.getPostContent(),post.getPostTitle()));
     }
-    public List<PostItem> findPostList(){
+    public List<PostItem> findPostList(Pageable page){
         List<Post> postList;
         List<PostItem> postItems = new ArrayList<>();
-        sort = Sort.by(Sort.Direction.DESC, "createTime");
-        postList = postRepository.findAll(sort);
+//        sort = Sort.by(Sort.Direction.DESC, "createTime");
+        postList = postRepository.findAll(page).getContent();
         for (Post post:postList){
             List<String> picturePaths = new ArrayList<>();
             for (PostPicture postPicture:postPictureRepository.findByPostId(post.getPostId())){

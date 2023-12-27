@@ -1,6 +1,8 @@
 package com.example.android.repository;
 
 import com.example.android.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -11,4 +13,5 @@ public interface PostRepository extends JpaRepository<Post, String>, JpaSpecific
     @Transactional
     void deleteByUserId(String userId);
     List<Post> findByUserId(String userId);
+    Page<Post> findAll(Pageable page);
 }
