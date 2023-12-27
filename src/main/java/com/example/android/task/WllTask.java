@@ -61,6 +61,6 @@ public class WllTask {
                 baseNum = 0;
             }
         }
-        System.out.println("执行：更新软件每日推荐");
-    }
+            System.out.println("执行：更新软件每日推荐");
+        }
 }

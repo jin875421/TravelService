@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +34,21 @@ public class StrategyService {
         }else {
             markerRepository.save(marker);
         }
+    }
+
+    public HashMap<String, String> getIconMap(){
+        String id = "";
+        String path = "";
+        String key = "";
+        List<Marker> markerList = markerRepository.findAll();
+        HashMap<String, String> iconMap = new HashMap<>();
+        for(Marker marker : markerList){
+            id = strategyRepository.findAllByLatitudeAndLongitude(String.valueOf(marker.getLatitude()), String.valueOf(marker.getLongitude())).get(0).getStrategyId();
+            path = strategyPictureRepository.findByStrategyId(id).get(0).getPicturePath();
+            key = marker.getLatitude()+"+"+marker.getLongitude();
+            iconMap.put(key, path);
+        }
+        return iconMap;
     }
 
     public ReturnStrategy getStrategyById(String strategyId){
