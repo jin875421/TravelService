@@ -137,7 +137,7 @@ public class TravelController {
         travelsService.deleteTravel(travelId);
     }
     @Transactional
-    @PostMapping("/EditTravelRecoed")
+    @PostMapping("/EditTravelRecord")
     //旅游信息上传
     public void EditTravel(
             @RequestPart("travelrecord") TravelRecord travelRecord,

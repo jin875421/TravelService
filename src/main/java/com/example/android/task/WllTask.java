@@ -32,7 +32,7 @@ public class WllTask {
 //    @Scheduled(cron = "0/6 * * * * ?")//Test
     public static void updateTodayRecoAttraction() {
         List<RecoAttraction> recoAttractionList = recoAttractionService.getRecoAttractionList();
-        if (recoAttractionList.size() == 0) {
+        if (recoAttractionList.size() != 0) {
             // 使用循环生成随机数并放入数组
             for (int i = 0; i < needUpdateNum; i++) {
                 int num = ThreadLocalRandom.current().nextInt(0, recoAttractionList.size());
