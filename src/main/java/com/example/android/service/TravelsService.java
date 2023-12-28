@@ -7,6 +7,7 @@ import com.example.android.repository.TravelPlaceRepository;
 import com.example.android.repository.TravelRepository;
 import com.example.android.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -75,8 +76,9 @@ public class TravelsService {
         for (Travel travel : travels){
             ShowTravel showTravel = new ShowTravel();
             List<String> images = new ArrayList<>();
-            //通过travelId获取placeId列表
-            List<TravelPlace> travelPlaces = travelPlaceRepository.findTravelPlacesByTravelId(travel.getTravelId());
+            //通过travelId获取placeId列表,以时间排序
+            Sort sort = Sort.by(Sort.Direction.DESC, "travelDate");
+            List<TravelPlace> travelPlaces = travelPlaceRepository.findTravelPlacesByTravelId(travel.getTravelId(),sort);
             //遍历所有的placeId，并添加第一张照片至images中
             for(TravelPlace travelPlace : travelPlaces){
                 images.add(travelPictureRepository.findTravelPicturesByPlaceId(travelPlace.getPlaceId()).get(0).getPicturePath());
@@ -128,12 +130,11 @@ public class TravelsService {
 //        String placeId = UUID.randomUUID().toString();
 //        LocalDate currentDate = LocalDate.now();
         //在这里，placeId应该不会重复存储到数据库
-        Date currentDate = new Date();
         travelPlace.setTravelId(travelRecord.getTravelId());
         travelPlace.setPlaceId(travelRecord.getPlaceId());
         travelPlace.setPlaceName(travelRecord.getPlaceName());
         travelPlace.setTravelExperience(travelRecord.getContent());
-        travelPlace.setTravelDate(currentDate);
+        travelPlace.setTravelDate(travelRecord.getCreateTime());
         //将该数据添加到数据库中
         travelPlaceRepository.save(travelPlace);
         //----------------------------------------------------------------------------------
@@ -174,7 +175,8 @@ public class TravelsService {
 
             //根据这个id找到所有的placeId和所有的对应的照片和日期
             //首先找到所有的travelPlace
-            List<TravelPlace> travelPlaces = travelPlaceRepository.findTravelPlacesByTravelId(travelId);
+            Sort sort = Sort.by(Sort.Direction.DESC, "travelDate");
+            List<TravelPlace> travelPlaces = travelPlaceRepository.findTravelPlacesByTravelId(travelId,sort);
             //然后再根据这个list找到所有placeDate
             List<Date> travelDates = travelPlaces.stream().map(p -> p.getTravelDate()).collect(Collectors.toList());
             mimDate = travelDates.get(0);//这里注意，第一个应该是0吧。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
@@ -228,7 +230,8 @@ public class TravelsService {
         String userId = travel.getUserId();
         String travelName = travel.getTravelName();
         //然后获取到所有的place并遍历
-        List<TravelPlace> travelPlaces = travelPlaceRepository.findTravelPlacesByTravelId(travelId);
+        Sort sort = Sort.by(Sort.Direction.DESC, "travelDate");
+        List<TravelPlace> travelPlaces = travelPlaceRepository.findTravelPlacesByTravelId(travelId,sort);
         for(TravelPlace travelPlace : travelPlaces){
             //用一个实体类对象接收这些数据
             TravelRecord travelRecord = new TravelRecord();
@@ -245,6 +248,7 @@ public class TravelsService {
             travelRecord.setPlaceId(placeId);
             travelRecord.setPlaceName(placeName);
             travelRecord.setContent(content);
+            travelRecord.setCreateTime(travelPlace.getTravelDate());
 
             //最后是添加照片列表
             //首先根据所有的placeId找到所有的对应的照片列表。。。。好像挺简单的

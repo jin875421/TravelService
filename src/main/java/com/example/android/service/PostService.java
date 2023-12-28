@@ -27,6 +27,8 @@ public class PostService {
     private StarRepository starRepository;
     @Autowired
     private LikeRepository likeRepository;
+    @Autowired
+    private ReportRepository reportRepository;
     private Sort sort;
     public boolean starExist(String userId,String postId){
         if (starRepository.findByPostIdAndUserId(postId,userId)!=null){
@@ -178,5 +180,9 @@ public class PostService {
 
     public int getLikeCount(String postId) {
         return likeRepository.countByPostId(postId);
+    }
+
+    public void reportPost(Report report) {
+        reportRepository.save(report);
     }
 }

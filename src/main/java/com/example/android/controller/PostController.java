@@ -2,6 +2,7 @@
     import com.example.android.entity.PostItem;
     import com.example.android.entity.PostWithUserInfo;
     import com.example.android.entity.LikeAndStarStatusResponse;
+    import com.example.android.entity.Report;
     import com.example.android.service.PostService;
     import com.example.android.service.UserInfoService;
     import org.springframework.beans.factory.annotation.Autowired;
@@ -240,6 +241,14 @@
         public String deletePost(String postId){
             postService.deletePost(postId);
             return "删除成功";
+        }
+        @GetMapping("/reportPost")
+        public void reportPost(@RequestParam("postId") String postId,
+                               @RequestParam("userId") String userId,
+                               @RequestParam("reason") String reason,
+                               @RequestParam("time") String time){
+            postService.reportPost(new Report(postId,userId,reason,time));
+
         }
 
     }

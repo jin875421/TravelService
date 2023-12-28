@@ -45,7 +45,7 @@ public class TravelController {
     private String uploadDirectory = "D:\\Upload\\travelpictures\\";
     @PostMapping("/createTravelRecord")
     //旅游信息上传
-    public void handleFileUpload(
+    public String handleFileUpload(
             @RequestPart("travelrecord") TravelRecord travelRecord,
             @RequestParam("images") List<MultipartFile> files,
             @RequestParam("identifiers") List<String> identifiers,
@@ -99,10 +99,12 @@ public class TravelController {
 
             //现在已经将图片保存好了，并且图片名称是fileNames列表，现在要将这些数据放到数据库中
             travelRecord.setImage(fileNames);
+
         }
 
         //现在将数据放到数据库中
         travelsService.createTravelRecoed(travelRecord);
+        return "success"; // 上传成功
     }
 
     //这个方法用于实现收到userId，返回所有的旅行信息的功能
