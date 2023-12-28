@@ -22,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -45,10 +46,23 @@ public class StrategyController {
     }
 
     @PostMapping("/getStrategyById")
-    public String getStrategyById(@RequestParam String strategyId) {
+    public String getStrategyById(@RequestBody String strategyId) {
+        System.out.println("getStrategyById启动");
         Gson gson = new Gson();
         ReturnStrategy strategy = strategyService.getStrategyById(strategyId);
         String json = gson.toJson(strategy);
+        System.out.println("通过strategyId找到的信息"+json);
+        return json;
+    }
+
+    @GetMapping("/getIconMap")
+    public String getIcon() {
+        System.out.println("getIcon启动");
+        Gson gson = new Gson();
+        HashMap<String, String> iconMap;
+        iconMap = strategyService.getIconMap();
+        String json = gson.toJson(iconMap);
+        System.out.println("通过strategyId找到的iconMap"+json);
         return json;
     }
 

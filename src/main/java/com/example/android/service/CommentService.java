@@ -2,6 +2,7 @@ package com.example.android.service;
 
 import com.example.android.entity.*;
 import com.example.android.repository.CommentRepository;
+import com.example.android.repository.StrategyCommentRepository;
 import com.example.android.repository.UserInfoRepository;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +25,58 @@ public class CommentService {
     private CommentRepository commentRepository;
     @Autowired
     private UserInfoRepository userInfoRepository;
+    @Autowired
+    private StrategyCommentRepository strategyCommentRepository;
 
     //上传评论，将评论内容保存到数据库中
     public Comment addComment(Comment comment){
         Comment save = commentRepository.save(comment);
         return save;
+    }
+
+    public StrategyComment addStrategyComment(StrategyComment strategyComment){
+        StrategyComment save = strategyCommentRepository.save(strategyComment);
+        logger.info("保存到数据库中的评论"+save);
+        return save;
+    }
+
+    public List<ReturnStrategyComment> getReturnStrategyCommentList(String strategyId){
+        System.out.println("service的getReturnStrategyCommentList执行");
+        List<ReturnStrategyComment> returnStrategyCommentList = new ArrayList<>();
+        sort = Sort.by(Sort.Direction.DESC, "time");
+        List<StrategyComment> strategyCommentList = strategyCommentRepository.findByStrategyId(strategyId, sort);
+        System.out.println("strategyCommentList为"+strategyCommentList.size());
+        //遍历帖子下的所有评论内容
+        for(StrategyComment strategyComment :strategyCommentList) {
+            if (strategyComment.getParentId() != null)
+                continue;
+            List<ReturnStrategyCommentRespond> returnStrategyCommentRespondList = new ArrayList<>();
+            //遍历每条评论的回复内容
+            List<StrategyComment> strategyCommentRespondList = strategyCommentRepository.findByParentId(strategyComment.getCommentId(), sort);
+            for(StrategyComment strategyCommentRespond:strategyCommentRespondList) {
+                ReturnStrategyCommentRespond returnStrategyCommentRespond = new ReturnStrategyCommentRespond(
+                        getUserNameByUserId(strategyCommentRespond.getUserId()),
+                        strategyCommentRespond.getText(),
+                        strategyCommentRespond.getTime(),
+                        getAvatarByUserId(strategyCommentRespond.getUserId())
+                );
+                System.out.println("returnCommentRespond"+returnStrategyCommentRespond);
+                returnStrategyCommentRespondList.add(returnStrategyCommentRespond);
+            }
+            //将评论信息和发布者信息结合起来
+            ReturnStrategyComment returnStrategyComment = new ReturnStrategyComment(strategyComment.getCommentId(),
+                    getUserNameByUserId(strategyComment.getUserId()),
+                    strategyId,
+                    strategyComment.getText(),
+                    strategyComment.getTime(),
+                    getAvatarByUserId(strategyComment.getUserId()),
+                    strategyComment.getUserId(),
+                    returnStrategyCommentRespondList
+            );
+            System.out.println("returnStrategyComment为"+returnStrategyComment);
+            returnStrategyCommentList.add(returnStrategyComment);
+        }
+        return returnStrategyCommentList;
     }
 
     //获取要显示的评论的信息，将评论内容和用户信息结合起来
@@ -65,6 +113,22 @@ public class CommentService {
             returnCommentList.add(returnComment);
         }
         return returnCommentList;
+    }
+
+    public List<ReturnStrategyCommentRespond> getReturnStrategyCommentRespondList(String theStrategyCommentId) {
+        List<ReturnStrategyCommentRespond> returnStrategyCommentRespondList = new ArrayList<>();
+        sort = Sort.by(Sort.Direction.DESC, "time");
+        List<StrategyComment> commentRespondList = strategyCommentRepository.findByParentId(theStrategyCommentId, sort);
+        for(StrategyComment strategyCommentRespond:commentRespondList) {
+            ReturnStrategyCommentRespond returnStrategyCommentRespond = new ReturnStrategyCommentRespond(
+                    getUserNameByUserId(strategyCommentRespond.getUserId()),
+                    strategyCommentRespond.getText(),
+                    strategyCommentRespond.getTime(),
+                    getAvatarByUserId(strategyCommentRespond.getUserId())
+            );
+            returnStrategyCommentRespondList.add(returnStrategyCommentRespond);
+        }
+        return returnStrategyCommentRespondList;
     }
 
     public List<ReturnCommentRespond> getReturnCommentRespondList(String theCommentId) {
