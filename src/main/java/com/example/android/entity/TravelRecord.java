@@ -16,7 +16,7 @@ public class TravelRecord {
     private String travelName;//大的名称
     private List<String> image;//旅行的图片
     private String content;//包含的内容
-    private Date createTime;//日期
+    private String createTime;//日期
 
 
     //以下是对该类进行操作的思路

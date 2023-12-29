@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,7 +54,7 @@ public class TravelsService {
 
             ShowPicture sp = new ShowPicture();
 
-            Date date = travelPlace.getTravelDate();
+            String date = travelPlace.getTravelDate();
             String placrName = travelPlace.getPlaceName();
             //然后这里再根据id找到所有的照片
             List<TravelPicture> travelPictures = travelPictureRepository.findTravelPicturesByPlaceId(travelPlace.getPlaceId());
@@ -162,6 +164,7 @@ public class TravelsService {
 
         //首先根据userId查找到所有的travel
         List<Travel> travels = travelRepository.findTravelsByUserId(userId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         //然后根据所有的travel找到所有的travelId
         List<String> travelIds = travels.stream().map(p -> p.getTravelId()).collect(Collectors.toList());
         //然后再根据travelIds找到所有的日期和照片，通过遍历来实现
@@ -169,7 +172,6 @@ public class TravelsService {
             //首先将所有的照片封装起来
             List<String> images = new ArrayList<>();
             //然后设置一个中间变量来放入最小日期
-            Date mimDate = new Date();
             //这个实体类对象用于存放这个遍历中得到的所有信息
             ShowTravel showTravel = new ShowTravel();
 
@@ -178,16 +180,17 @@ public class TravelsService {
             Sort sort = Sort.by(Sort.Direction.DESC, "travelDate");
             List<TravelPlace> travelPlaces = travelPlaceRepository.findTravelPlacesByTravelId(travelId,sort);
             //然后再根据这个list找到所有placeDate
-            List<Date> travelDates = travelPlaces.stream().map(p -> p.getTravelDate()).collect(Collectors.toList());
-            mimDate = travelDates.get(0);//这里注意，第一个应该是0吧。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
+            List<String> travelDates = travelPlaces.stream().map(p -> p.getTravelDate()).collect(Collectors.toList());
+            LocalDate mimDate = LocalDate.parse(travelDates.get(0), formatter);//这里注意，第一个应该是0吧。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。
             //现在遍历这个list，找到最小的日期
-            for (Date date : travelDates){
-                if(mimDate.after(date)){
-                    mimDate = date;
+            for (String date : travelDates){
+                LocalDate date1 = LocalDate.parse(date, formatter);
+                if(mimDate.isAfter(date1)){
+                    mimDate = date1;
                 }
             }
             //现在经过遍历，密码Date就是所有日期中最小的了
-            showTravel.setDate(mimDate);
+            showTravel.setDate(mimDate.toString());
 
             //下一步，得到照片
             //首先得到所有的placeId,然后再根据所有的placeId得到照片

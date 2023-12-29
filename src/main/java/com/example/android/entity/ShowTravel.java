@@ -11,6 +11,6 @@ public class ShowTravel {
     private String userId;
     private String travelName;//大的名称
     private String travelId;
-    private Date date;
+    private String date;
     private List<String> images;
 }

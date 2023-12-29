@@ -15,6 +15,6 @@ public class TravelPlace {
     private String travelId;
     private String placeName;
     private String travelExperience;
-    private Date travelDate;
+    private String travelDate;
 
 }

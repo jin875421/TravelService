@@ -140,67 +140,6 @@ public class TravelController {
     public void deleteTravel(String travelId){
         travelsService.deleteTravel(travelId);
     }
-//    @Transactional
-//    @PostMapping("/EditTravelRecord")
-//    //旅游信息上传
-//    public void EditTravel(
-//            @RequestPart("travelrecord") TravelRecord travelRecord,
-//            @RequestParam("images") List<MultipartFile> files,
-//            @RequestParam("identifiers") List<String> identifiers,
-//            @RequestParam("sequenceNumbers") List<Integer> sequenceNumbers,
-//            @RequestParam("totalChunks") List<Integer> totalChunks
-//    ) {
-//        //先执行删除，在创建
-//        travelsService.deleteTravel(travelRecord.getTravelId());
-//        travelRecord.setPlaceId(UUID.randomUUID().toString());
-//        //如果图片存在
-//        if (travelRecord.getPlaceId() != null){
-//            List<String> fileNames = new ArrayList<>();
-//            for (int i = 0; i < files.size(); i++) {
-//                MultipartFile file = files.get(i);
-//                String identifier = identifiers.get(i);
-//                int sequenceNumber = sequenceNumbers.get(i);
-//                int totalChunk = totalChunks.get(i);
-//                try {
-//                    // 创建目录（如果不存在）
-//                    File uploadDir = new File(uploadDirectory);
-//                    if (!uploadDir.exists()) {
-//                        uploadDir.mkdirs();
-//                    }
-//                    // 构建文件名（使用标识符和序号）
-//                    String fileName = identifier + "_" + sequenceNumber + "_" + file.getOriginalFilename();
-//                    // 保存文件分片
-//                    byte[] bytes = file.getBytes();
-//                    Path path = Paths.get(uploadDirectory + fileName);
-//                    Files.write(path, bytes);
-//                    // 检查是否所有分片都已上传
-//                    if (sequenceNumber == totalChunk - 1) {
-//                        // 如果所有分片都已上传，则重组文件
-//                        String combinedFileName = identifier + "_" + file.getOriginalFilename();
-//                        fileNames.add("travelpictures/"+combinedFileName);
-//                        File combinedFile = new File(uploadDirectory + combinedFileName);
-//                        for (int j = 0; j < totalChunk; j++) {
-//                            File partFile = new File(uploadDirectory + identifier + "_" + j + "_" + file.getOriginalFilename());
-//                            FileOutputStream fos = new FileOutputStream(combinedFile, true);
-//                            FileInputStream fis = new FileInputStream(partFile);
-//                            FileCopyUtils.copy(fis, fos);
-//                            fis.close();
-//                            fos.close();
-//                            partFile.delete(); // 清理分片文件
-//                        }
-//                    }
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            //现在已经将图片保存好了，并且图片名称是fileNames列表，现在要将这些数据放到数据库中
-//            travelRecord.setImage(fileNames);
-//        }
-//
-//        //现在将数据放到数据库中
-//        travelsService.createTravelRecoed(travelRecord);
-//    }
-
 
 }
 

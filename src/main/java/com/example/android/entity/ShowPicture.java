@@ -12,7 +12,7 @@ public class ShowPicture {
 //    private String pictureId;
 //    private String userId;
     private List<String> picturePath;
-    private Date travelDate;
+    private String travelDate;
     private String placeName;
 
 }
