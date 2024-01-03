@@ -16,4 +16,6 @@ public interface PostPictureRepository extends JpaRepository<PostPicture, String
     @Transactional
     @Modifying
     void deleteByPicturePath(String picturePath);
+
+
 }
