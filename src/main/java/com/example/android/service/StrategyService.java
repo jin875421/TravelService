@@ -162,6 +162,7 @@ public class StrategyService {
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
+        System.out.println("计算得出两点之间的距离"+c*6378.137);
         if(c*6378.137 < 0.6){
             return true;
         }else {
