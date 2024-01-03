@@ -86,7 +86,7 @@
                         if (lastDotIndex > 0) {
                             extension = filename.substring(lastDotIndex + 1);
                         }
-                        String fileName = identifier + "_" + sequenceNumber + "_" + post.getUserId()+extension;
+                        String fileName = identifier + "_" + sequenceNumber + "_" + post.getUserId()+"."+extension;
                         // 保存文件分片
                         byte[] bytes = file.getBytes();
                         Path path = Paths.get(uploadDirectory + fileName);
@@ -94,11 +94,11 @@
                         // 检查是否所有分片都已上传
                         if (sequenceNumber == totalChunk - 1) {
                             // 如果所有分片都已上传，则重组文件
-                            String combinedFileName = identifier + "_" + post.getUserId()+extension;
+                            String combinedFileName = identifier + "_" + post.getUserId()+"."+extension;
                             fileNames.add("post/"+combinedFileName);
                             File combinedFile = new File(uploadDirectory + combinedFileName);
                             for (int j = 0; j < totalChunk; j++) {
-                                File partFile = new File(uploadDirectory + identifier + "_" + j + "_" + post.getUserId()+extension);
+                                File partFile = new File(uploadDirectory + identifier + "_" + j + "_" + post.getUserId()+"."+extension);
                                 FileOutputStream fos = new FileOutputStream(combinedFile, true);
                                 FileInputStream fis = new FileInputStream(partFile);
                                 FileCopyUtils.copy(fis, fos);
@@ -201,7 +201,7 @@
                             extension = filename.substring(lastDotIndex + 1);
                         }
                         // 构建文件名（使用标识符和序号）
-                        String fileName = identifier + "_" + sequenceNumber + "_" + post.getUserId()+extension;
+                        String fileName = identifier + "_" + sequenceNumber + "_" + post.getUserId()+"."+extension;
                         // 保存文件分片
                         byte[] bytes = file.getBytes();
                         Path path = Paths.get(uploadDirectory + fileName);
@@ -209,11 +209,11 @@
                         // 检查是否所有分片都已上传
                         if (sequenceNumber == totalChunk - 1) {
                             // 如果所有分片都已上传，则重组文件
-                            String combinedFileName = identifier + "_" + post.getUserId()+extension;
+                            String combinedFileName = identifier + "_" + post.getUserId()+"."+extension;
                             fileNames.add("post/"+combinedFileName);
                             File combinedFile = new File(uploadDirectory + combinedFileName);
                             for (int j = 0; j < totalChunk; j++) {
-                                File partFile = new File(uploadDirectory + identifier + "_" + j + "_" + post.getUserId()+extension);
+                                File partFile = new File(uploadDirectory + identifier + "_" + j + "_" + post.getUserId()+"."+extension);
                                 FileOutputStream fos = new FileOutputStream(combinedFile, true);
                                 FileInputStream fis = new FileInputStream(partFile);
                                 FileCopyUtils.copy(fis, fos);
