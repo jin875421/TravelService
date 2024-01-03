@@ -45,18 +45,6 @@ public class CommentController {
         return service.getReturnCommentList(postId).size();
     }
 
-//    @PostMapping("/getReturnCommendRespondList")
-//    public String getCommendRespond(@RequestBody String commentId) {
-//        String theCommentId = commentId;
-//        List<ReturnCommentRespond> returnCommentRespondList;
-//        returnCommentRespondList = service.getReturnCommentRespondList(theCommentId);
-//        Gson gson = new Gson();
-//        String json = gson.toJson(returnCommentRespondList);
-//        System.out.println("移动端在评论详情页面上提交回复之后请求刷新数据，服务器返回的数据"+json);
-//
-//        return json;
-//    }
-
     @PostMapping("/addComment")
     public String addComment(@RequestBody Comment comment) {
         System.out.println("接受到的评论内容"+comment.toString());
@@ -88,6 +76,25 @@ public class CommentController {
             json = gson.toJson(returnCommentRespondList);
             System.out.println("移动端在评论详情页面上提交回复之后请求刷新数据，服务器返回的数据" + json);
         }
+        return json;
+    }
+
+    @PostMapping("/getReturnStrategyCommendRespondList")
+    public String getStrategyCommendRespond(@RequestBody String strategyCommentId) {
+        String theStrategyCommentId = strategyCommentId;
+        List<ReturnStrategyCommentRespond> returnStrategyCommentRespondList;
+        returnStrategyCommentRespondList = service.getReturnStrategyCommentRespondList(theStrategyCommentId);
+        Gson gson = new Gson();
+        String json = gson.toJson(returnStrategyCommentRespondList);
+        if(theStrategyCommentId.equals("")){
+            return "评论id为空";
+        }else {
+            returnStrategyCommentRespondList = service.getReturnStrategyCommentRespondList(theStrategyCommentId);
+            gson = new Gson();
+            json = gson.toJson(returnStrategyCommentRespondList);
+            System.out.println("移动端在攻略详情页面上提交回复之后请求刷新数据，服务器返回的数据" + json);
+        }
+
         return json;
     }
 

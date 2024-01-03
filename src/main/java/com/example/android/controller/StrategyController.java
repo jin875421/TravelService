@@ -81,11 +81,10 @@ public class StrategyController {
                             @RequestParam("totalChunks") List<Integer> totalChunks,
                             @RequestParam("images") List<MultipartFile> files
     ) {
-        System.out.println("addStrategy启动");
+        System.out.println("addStrategy启动, 获取的坐标为"+latitude+","+longitude);
         //保存marker
         Marker marker = new Marker(strategyId, selectedCity, Double.parseDouble(latitude), Double.parseDouble(longitude));
         strategyService.addMarker(marker);
-        String coverPath;
         Strategy strategy = new Strategy(strategyId, userId, title, describe, latitude, longitude, time);
         System.out.println("==="+strategy.toString()+"===");
         strategyService.addStrategy(strategy);
