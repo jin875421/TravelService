@@ -7,6 +7,7 @@ import com.example.android.service.RecoAttractionImgService;
 import com.example.android.service.RecoAttractionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,37 +25,8 @@ public class RecoAttractionController {
     private RecoAttractionService recoAttractionService;
     @Autowired
     private RecoAttractionImgService recoAttractionImgService;
-//    static boolean todayFirstGet = true;
     @GetMapping("/getRecoAttractionList")
     public List<RecoAttraction> getRecoAttractionList(){
-//        if (todayFirstGet){
-//            List<RecoAttraction> recoAttractionList = recoAttractionService.getRecoAttractionList();
-//            System.out.println(recoAttractionList);
-//            int [] randomArray = new int[2];
-//            // 使用循环生成随机数并放入数组
-//            for (int i = 0; i < 2; i++) {
-//                int num = ThreadLocalRandom.current().nextInt(0, recoAttractionList.size());
-//                // 使用循环检查随机数是否已经存在于数组中
-//                boolean contains = false;
-//                for (int j = 0; j < i; j++) {
-//                    if (randomArray[j] == num) {
-//                        contains = true;
-//                        break;
-//                    }
-//                }
-//                // 如果随机数已经存在于数组中，则重新生成
-//                if (contains) {
-//                    i--;
-//                } else {
-//                    randomArray[i] = num;
-//                    System.out.println(randomArray[i]);
-//                }
-//            }
-//            for (int i:randomArray){
-//                dailyRecoAttractionList.add(recoAttractionList.get(i));
-//            }
-//            todayFirstGet = false;
-//        }
         for (RecoAttraction r:dailyRecoAttractionList){
             if(StringUtils.isEmpty(r.getAttractionName())){
                 r.setAttractionName("未知景点");
@@ -75,7 +47,32 @@ public class RecoAttractionController {
                 r.setAttractionDesc("暂无景点描述");
             }
         }
-        System.out.println(dailyRecoAttractionList);
+//        System.out.println(dailyRecoAttractionList);
         return dailyRecoAttractionList;
+    }
+    @GetMapping("/getAllRecoAttraction")
+    public List<RecoAttraction> getAllRecoAttraction(){
+        List<RecoAttraction> recoAttractionList = recoAttractionService.getRecoAttractionList();
+        for (RecoAttraction r:recoAttractionList){
+            if(StringUtils.isEmpty(r.getAttractionName())){
+                r.setAttractionName("未知景点");
+            }
+            if(StringUtils.isEmpty(r.getCountry())){
+                r.setCountry("");
+            }
+            if(StringUtils.isEmpty(r.getProvince())){
+                r.setProvince("");
+            }
+            if(StringUtils.isEmpty(r.getCity())){
+                r.setCity("");
+            }
+            if(StringUtils.isEmpty(r.getAddress())){
+                r.setAddress("");
+            }
+            if(StringUtils.isEmpty(r.getAttractionDesc())){
+                r.setAttractionDesc("暂无景点描述");
+            }
+        }
+        return recoAttractionList;
     }
 }

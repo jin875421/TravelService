@@ -54,7 +54,6 @@ public class WllTask {
             System.out.println(Arrays.toString(randomArray));
             for (int i = baseNum * needUpdateNum; i < (baseNum + 1) * needUpdateNum; i++) {
                 dailyRecoAttractionList.add(recoAttractionList.get(randomArray[i]));
-                System.out.println(randomArray[i]);
             }
             baseNum++;
             if (baseNum > 1) {
