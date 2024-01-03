@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +29,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/travel")
 public class TravelController {
+
+    //这是一个全局变量ip地址
+    String ip = "192.168.43.75:8080";
+
+
     //首先依赖注入
     @Autowired
     private TravelsService travelsService;
@@ -43,6 +49,14 @@ public class TravelController {
     //这个方法用于新增旅游记录信息，用于将一次传过来的包含在一次旅程中的地点一个地点记录保存到数据库中
 
     private String uploadDirectory = "D:\\Upload\\travelpictures\\";
+
+    //这个方法用于添加旅游信息
+    @PostMapping("/createTravelRecoedTest")
+    public void text(@RequestBody TravelRecord travelRecord){
+        travelsService.createTravelRecoed(travelRecord);
+    }
+
+
     @PostMapping("/createTravelRecord")
     //旅游信息上传
     public String handleFileUpload(
@@ -131,7 +145,7 @@ public class TravelController {
         return travelsService.showATravel(travelId);
     }
     @GetMapping("/getReview")
-    public List<ShowTravel> showTravelList(String userId){
+    public List<ShowTravel> showTravelList(String userId) throws ParseException {
         return travelsService.listTravels(userId);
     };
 

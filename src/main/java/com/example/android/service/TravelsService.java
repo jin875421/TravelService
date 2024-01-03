@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -71,7 +73,7 @@ public class TravelsService {
 
         //TODO 目前逻辑上看来没有什么问题，但是需要在返回和接收数据的时候将数据封装到vo类里
     }
-    public List<ShowTravel> listTravels(String userId) {
+    public List<ShowTravel> listTravels(String userId) throws ParseException {
         List<ShowTravel> showTravelsList = new ArrayList<>();
         //首先根据userId查找到所有的travel
         List<Travel> travels = travelRepository.findTravelsByUserId(userId);
@@ -82,13 +84,30 @@ public class TravelsService {
             Sort sort = Sort.by(Sort.Direction.DESC, "travelDate");
             List<TravelPlace> travelPlaces = travelPlaceRepository.findTravelPlacesByTravelId(travel.getTravelId(),sort);
             //遍历所有的placeId，并添加第一张照片至images中
+            //添加时间
+            Date date1 = new Date();
+
             for(TravelPlace travelPlace : travelPlaces){
+
+                //以下几行用于排序时间，将地点中最早的时间作为整个旅游中的时间
+                String date = travelPlace.getTravelDate();
+                //然后变成Date类型
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date2 = dateFormat.parse(date);
+                if(date2.before(date1)){
+                    date1 = date2;
+                }
                 images.add(travelPictureRepository.findTravelPicturesByPlaceId(travelPlace.getPlaceId()).get(0).getPicturePath());
             }
             showTravel.setUserId(travel.getUserId());
             showTravel.setTravelId(travel.getTravelId());
             showTravel.setTravelName(travel.getTravelName());
             showTravel.setImages(images);
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dateString = dateFormat.format(date1);
+            showTravel.setDate(dateString);
+//            showTravel.setDate(travelPlaces.get(0).getTravelDate());
             showTravelsList.add(showTravel);
         }
         return showTravelsList;
