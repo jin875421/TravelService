@@ -33,7 +33,16 @@ public class TravelsService {
 
 
 
+    //保存图片
+    public void savepicture(String picturePath, String placeId){
+        String pictureId = UUID.randomUUID().toString();
+        TravelPicture travelPicture=new TravelPicture();
+        travelPicture.setPictureId(pictureId);
+        travelPicture.setPlaceId(placeId);
+        travelPicture.setPicturePath(picturePath);
+        travelPictureRepository.save(travelPicture);
 
+    }
     //在这里写一个方法根据user_id查询来返回ShowPicture类型的list
     public List<ShowPicture> getPicturesShowedByUserId(String userId){
         List<ShowPicture> list = new ArrayList<>();
@@ -65,6 +74,7 @@ public class TravelsService {
             sp.setTravelDate(date);
             sp.setPlaceName(placrName);
             sp.setPicturePath(picturePachs);
+            sp.setPlaceId(travelPlace.getPlaceId());
             //然后再将这个实体类对象sp放到list中
             list.add(sp);
         }
@@ -291,6 +301,9 @@ public class TravelsService {
             travelPictureRepository.deleteByPlaceId(s.getPlaceId());
         }
         travelPlaceRepository.deleteByTravelId(travelId);
+    }
+    public void deletePicture(String path){
+        travelPictureRepository.deleteByPicturePath(path);
     }
 }
 

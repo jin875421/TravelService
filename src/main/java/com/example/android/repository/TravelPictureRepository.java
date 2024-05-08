@@ -13,6 +13,7 @@ public interface TravelPictureRepository extends JpaRepository<TravelPicture, St
 
     void deleteByPlaceId(String s);
 
+    void deleteByPicturePath(String path);
     //在这里写一个方法，通过找到的
 
 }

@@ -126,6 +126,7 @@ public class PostService {
                 picturePaths.add(postPicture.getPicturePath());
             }
             PostContent postContent = postContentRepository.findByPostId(post.getPostId());
+            System.out.println(post.getPostId()+"dsadasdasd");
             PostItem postItem = new PostItem(post.getPostId(),postContent.getPostTitle(),postContent.getPostContent(),post.getUserId(),post.getCreateTime(),picturePaths);
             postItems.add(postItem);
         }

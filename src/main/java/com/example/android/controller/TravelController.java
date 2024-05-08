@@ -7,6 +7,8 @@ import com.example.android.entity.TravelRecord;
 import com.example.android.service.TravelsService;
 import com.example.android.vo.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -49,6 +51,7 @@ public class TravelController {
     //这个方法用于新增旅游记录信息，用于将一次传过来的包含在一次旅程中的地点一个地点记录保存到数据库中
 
     private String uploadDirectory = "D:\\Upload\\travelpictures\\";
+    private  String imageUploadDirectory="D:\\Upload\\";
 
     //这个方法用于添加旅游信息
     @PostMapping("/createTravelRecoedTest")
@@ -56,7 +59,25 @@ public class TravelController {
         travelsService.createTravelRecoed(travelRecord);
     }
 
-
+    @PostMapping("/uploadphoto")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
+                                                   @RequestParam("placeId") String placeId
+                                                   ) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Please upload a file");
+        }
+        try {
+            // 保存文件到指定路径
+            String fileName = file.getOriginalFilename();
+            String filePath =  uploadDirectory+fileName;
+            file.transferTo(new File(filePath));
+            travelsService.savepicture("travelpictures/"+fileName,placeId);
+            return ResponseEntity.status(HttpStatus.OK).body("File uploaded successfully: " + fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
+        }
+    }
     @PostMapping("/createTravelRecord")
     //旅游信息上传
     public String handleFileUpload(
@@ -154,7 +175,34 @@ public class TravelController {
     public void deleteTravel(String travelId){
         travelsService.deleteTravel(travelId);
     }
+    @Transactional
+    @PostMapping("/deletePicture")
+    public ResponseEntity<String> deletePicture(@RequestBody String path) {
+        try {
+            // 确保逻辑路径符合预期格式，防止路径遍历攻击
+            System.out.println("sdasd"+path);
+//            if (!path.matches("^[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)?$")) {
+//                return ResponseEntity.badRequest().body("无效的图片路径");
+//            }
 
+            // 构建服务器上的实际文件路径，确保路径安全
+            String absolutePath = Paths.get(imageUploadDirectory, path).toString();
+
+            // 验证文件是否存在且是文件
+            if (Files.exists(Paths.get(absolutePath)) && Files.isRegularFile(Paths.get(absolutePath))) {
+                travelsService.deletePicture(path);
+                Files.delete(Paths.get(absolutePath)); // 删除文件
+                return ResponseEntity.ok("图片已成功删除");
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (IOException e) {
+            // 记录日志并返回错误信息
+            return ResponseEntity.status(500).body("图片删除过程中发生错误");
+        }
+
+
+    }
 }
 
 
