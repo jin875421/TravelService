@@ -43,6 +43,9 @@ public class TravelsService {
         travelPictureRepository.save(travelPicture);
 
     }
+    public List<TravelPicture> getPicturesByPlaceId(String placeId) {
+        return travelPictureRepository.findTravelPicturesByPlaceId(placeId);
+    }
     //在这里写一个方法根据user_id查询来返回ShowPicture类型的list
     public List<ShowPicture> getPicturesShowedByUserId(String userId){
         List<ShowPicture> list = new ArrayList<>();

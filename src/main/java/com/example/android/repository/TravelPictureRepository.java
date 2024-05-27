@@ -9,7 +9,8 @@ import java.util.List;
 public interface TravelPictureRepository extends JpaRepository<TravelPicture, String>, JpaSpecificationExecutor<TravelPicture> {
 
     //在这里写一个方法，传入placeId，查找到所有的TravelPicture
-    public List<TravelPicture> findTravelPicturesByPlaceId(String placeId);
+    List<TravelPicture> findTravelPicturesByPlaceId(String placeId);
+
 
     void deleteByPlaceId(String s);
 

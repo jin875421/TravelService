@@ -3,6 +3,7 @@ package com.example.android.controller;
 
 import com.example.android.entity.ShowPicture;
 import com.example.android.entity.ShowTravel;
+import com.example.android.entity.TravelPicture;
 import com.example.android.entity.TravelRecord;
 import com.example.android.service.TravelsService;
 import com.example.android.vo.Result;
@@ -35,7 +36,7 @@ public class TravelController {
     //这是一个全局变量ip地址
     String ip = "192.168.43.75:8080";
 
-
+    private List<TravelPicture> pictureList = new ArrayList<>();
     //首先依赖注入
     @Autowired
     private TravelsService travelsService;
@@ -53,6 +54,10 @@ public class TravelController {
     private String uploadDirectory = "D:\\Upload\\travelpictures\\";
     private  String imageUploadDirectory="D:\\Upload\\";
 
+    @GetMapping("/pictures")
+    public List<TravelPicture> getPictures(@RequestParam String placeId) {
+        return travelsService.getPicturesByPlaceId(placeId);
+    }
     //这个方法用于添加旅游信息
     @PostMapping("/createTravelRecoedTest")
     public void text(@RequestBody TravelRecord travelRecord){
@@ -72,10 +77,10 @@ public class TravelController {
             String filePath =  uploadDirectory+fileName;
             file.transferTo(new File(filePath));
             travelsService.savepicture("travelpictures/"+fileName,placeId);
-            return ResponseEntity.status(HttpStatus.OK).body("File uploaded successfully: " + fileName);
+            return ResponseEntity.status(HttpStatus.OK).body("1111");
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("0000");
         }
     }
     @PostMapping("/createTravelRecord")
