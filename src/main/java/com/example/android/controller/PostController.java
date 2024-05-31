@@ -1,8 +1,5 @@
     package com.example.android.controller;
-    import com.example.android.entity.PostItem;
-    import com.example.android.entity.PostWithUserInfo;
-    import com.example.android.entity.LikeAndStarStatusResponse;
-    import com.example.android.entity.Report;
+    import com.example.android.entity.*;
     import com.example.android.service.PostService;
     import com.example.android.service.UserInfoService;
     import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +25,11 @@
         private UserInfoService userInfoService;
 
         private String uploadDirectory = "D:\\Upload\\post\\";
+        @GetMapping("/getFollowList")
+        public List<Follow> getFollowList(@RequestParam String userId){
+            return postService.getFollowList(userId);
+        }
+
         @GetMapping ("/getstarlist")
         public List<PostWithUserInfo> getStarList(@RequestParam String userId){
             List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();

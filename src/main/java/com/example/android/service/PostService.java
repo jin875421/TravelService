@@ -3,7 +3,6 @@ package com.example.android.service;
 import com.example.android.entity.*;
 import com.example.android.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class PostService {
     @Autowired
     private CommentRepository commentRepository;
@@ -26,9 +26,13 @@ public class PostService {
     @Autowired
     private StarRepository starRepository;
     @Autowired
+    private FollowRepository followRepository;
+    @Autowired
     private LikeRepository likeRepository;
     @Autowired
     private ReportRepository reportRepository;
+    @Autowired
+    private UserInfoRepository userInfoRepository;
     private Sort sort;
     public boolean starExist(String userId,String postId){
         if (starRepository.findByPostIdAndUserId(postId,userId)!=null){
@@ -185,5 +189,29 @@ public class PostService {
 
     public void reportPost(Report report) {
         reportRepository.save(report);
+    }
+
+    /**
+     * 获取指定用户的关注列表。
+     *
+     * @param userId 需要获取关注列表的用户ID。
+     * @return 返回该用户的关注列表，包含有效的关注记录。
+     */
+    public List<Follow> getFollowList(String userId) {
+        // 通过用户ID查询关注列表
+        List<Follow> followList = followRepository.findByUserId(userId);
+
+        // 遍历关注列表，验证关注的用户是否存在，若不存在则删除该关注记录
+        followList.forEach(follow -> {
+            UserInfo userInfo = userInfoRepository.findByUserId(follow.getFollowId());
+            if (userInfo == null){
+                followRepository.deleteByFollowId(follow.getFollowId());
+                System.out.println("删除关注记录"+follow.getFollowId());
+            }
+        });
+
+        // 重新获取经过验证后的关注列表
+        followList = followRepository.findByUserId(userId);
+        return followList;
     }
 }
