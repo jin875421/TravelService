@@ -1,8 +1,12 @@
 package com.example.android.entity;
 
 import lombok.Data;
-import org.springframework.data.annotation.Id;
 
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Entity
 @Data
 public class Personal {
     @Id
