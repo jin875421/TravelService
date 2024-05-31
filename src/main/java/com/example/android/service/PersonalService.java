@@ -11,7 +11,7 @@ public class PersonalService {
     private PersonalRepository personalRepository;
 
 
-    private Personal loadBackground(String userId){
+    public Personal loadBackground(String userId){
         Personal personal=new Personal();
         personal=personalRepository.findByUserId(userId);
         return personal;
