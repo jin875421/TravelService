@@ -30,6 +30,25 @@
             return postService.getFollowList(userId);
         }
 
+        @GetMapping("isFollow")
+        public String isFollow(@RequestParam String userId,@RequestParam String followId){
+            Boolean isFollow = postService.followExist(userId,followId);
+            if(isFollow) return "true";
+            return "false";
+        }
+
+        @GetMapping("/deleteFollow")
+        public String deleteFollow(@RequestParam String userId,@RequestParam String followId){
+            postService.deleteFollow(userId,followId);
+            return "success";
+        }
+
+        @GetMapping("/addFollow")
+        public String addFollow(@RequestParam String userId,@RequestParam String followId){
+            postService.saveFollow(userId,followId);
+            return "success";
+        }
+
         @GetMapping ("/getstarlist")
         public List<PostWithUserInfo> getStarList(@RequestParam String userId){
             List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
