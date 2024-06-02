@@ -8,11 +8,14 @@ import com.example.android.utils.EmailUtil;
 import com.example.android.utils.SmsUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -29,7 +32,31 @@ public class UserController {
     private final Cache<String, String> codeCache = Caffeine.newBuilder()
             .expireAfterWrite(2, TimeUnit.MINUTES) // 设置验证码的过期时间，例如2分钟
             .build();
-
+    @GetMapping("/getUserInfo")
+    public UserInfo getUserInfo(@RequestParam("userId") String userId) {
+        if (userId.isEmpty()) {
+            return null;
+        }
+        UserInfo userInfo = userInfoService.findByUserId(userId);
+        if (userInfo == null) {
+            return null;
+        }
+        return userInfo;
+    }
+    @GetMapping("/getUserInfoList")
+    public List<UserInfo> getUserInfoList(@RequestParam("userIdList") String userIdList) {
+        if (userIdList.isEmpty()) {
+            return null;
+        }
+        Gson gson = new Gson();
+        List<String> userIdList1 = gson.fromJson(userIdList, List.class);
+        List<UserInfo> userInfos = new ArrayList<>();
+        for(String userId:userIdList1){
+            UserInfo userInfo = userInfoService.findByUserId(userId);
+            userInfos.add(userInfo);
+        }
+        return userInfos;
+    }
     @PostMapping("/upload")
     public ResponseEntity<String> updateUserData(
             @RequestParam("file") MultipartFile file,

@@ -1,7 +1,9 @@
     package com.example.android.controller;
     import com.example.android.entity.*;
+    import com.example.android.service.FollowService;
     import com.example.android.service.PostService;
     import com.example.android.service.UserInfoService;
+    import com.google.gson.Gson;
     import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.data.domain.PageRequest;
     import org.springframework.data.domain.Sort;
@@ -25,29 +27,6 @@
         private UserInfoService userInfoService;
 
         private String uploadDirectory = "D:\\Upload\\post\\";
-        @GetMapping("/getFollowList")
-        public List<Follow> getFollowList(@RequestParam String userId){
-            return postService.getFollowList(userId);
-        }
-
-        @GetMapping("isFollow")
-        public String isFollow(@RequestParam String userId,@RequestParam String followId){
-            Boolean isFollow = postService.followExist(userId,followId);
-            if(isFollow) return "true";
-            return "false";
-        }
-
-        @GetMapping("/deleteFollow")
-        public String deleteFollow(@RequestParam String userId,@RequestParam String followId){
-            postService.deleteFollow(userId,followId);
-            return "success";
-        }
-
-        @GetMapping("/addFollow")
-        public String addFollow(@RequestParam String userId,@RequestParam String followId){
-            postService.saveFollow(userId,followId);
-            return "success";
-        }
 
         @GetMapping ("/getstarlist")
         public List<PostWithUserInfo> getStarList(@RequestParam String userId){
