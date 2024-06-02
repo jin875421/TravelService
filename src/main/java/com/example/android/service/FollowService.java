@@ -5,6 +5,7 @@ import com.example.android.entity.UserInfo;
 import com.example.android.repository.FollowRepository;
 import com.example.android.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,7 +27,7 @@ public class FollowService {
      * @param userId 需要获取关注列表的用户ID。
      * @return 返回该用户的关注列表，包含有效的关注记录。
      */
-    public List<UserInfo> getFollowList(String userId) {
+    public List<UserInfo> getFollowUserInfoList(String userId) {
         // 通过用户ID查询关注列表
         List<Follow> followList = followRepository.findByUserId(userId);
 
@@ -49,6 +50,8 @@ public class FollowService {
                 userInfoList.add(userInfo);
             }
         });
+        // 输出
+        System.out.println(userInfoList);
         return userInfoList;
     }
 
@@ -58,7 +61,7 @@ public class FollowService {
      * @param followId
      * @return 0: 成功 1:用户不存在 2:已关注
      */
-    public int saveFollow(String userId, String followId) {
+    public int saveFollow(String userId, String followId,String groupOf) {
         //先检测关注的对象是否存在
         UserInfo userInfo = userInfoRepository.findByUserId(followId);
         if (userInfo == null){
@@ -72,7 +75,7 @@ public class FollowService {
         //未关注
         //动态生成UUID
         String id= UUID.randomUUID().toString();
-        followRepository.save(new Follow(id,userId,followId));
+        followRepository.save(new Follow(id,userId,followId,groupOf));
         return 0;
     }
 
@@ -134,5 +137,9 @@ public class FollowService {
         if(follow != null) return true;
         // 查询结果为空，表示关注关系不存在，返回false
         return false;
+    }
+
+    public List<Follow> getFollowList(String userId) {
+        return followRepository.findByUserId(userId);
     }
 }

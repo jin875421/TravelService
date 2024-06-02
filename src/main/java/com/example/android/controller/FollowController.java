@@ -1,7 +1,9 @@
 package com.example.android.controller;
 
+import com.example.android.entity.Follow;
 import com.example.android.entity.UserInfo;
 import com.example.android.service.FollowService;
+import com.example.android.service.UserExtraInfoService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -13,14 +15,25 @@ import java.util.List;
 public class FollowController {
     @Autowired
     private FollowService followService;
+    @Autowired
+    private UserExtraInfoService userExtraInfoService;
+    @GetMapping("/getGroupInfo")
+    public String getGroupInfo(@RequestParam String userId){
+        String followGroupInfo = userExtraInfoService.getGroupInfo(userId);
+        return followGroupInfo;
+    }
     @GetMapping("isFollow")
     public String isFollow(@RequestParam String userId,@RequestParam String followId){
         Boolean isFollow = followService.followExist(userId,followId);
         if(isFollow) return "true";
         return "false";
     }
+    @GetMapping("/getFollowUserInfoList")
+    public List<UserInfo> getFollowUserInfoList(@RequestParam String userId){
+        return followService.getFollowUserInfoList(userId);
+    }
     @GetMapping("/getFollowList")
-    public List<UserInfo> getFollowList(@RequestParam String userId){
+    public List<Follow> getFollowList(@RequestParam String userId){
         return followService.getFollowList(userId);
     }
     @PostMapping("/deleteFollow")
@@ -30,8 +43,8 @@ public class FollowController {
     }
 
     @PostMapping("/addFollow")
-    public String addFollow(@RequestParam String userId,@RequestParam String followId){
-        followService.saveFollow(userId,followId);
+    public String addFollow(@RequestParam String userId,@RequestParam String followId,@RequestParam(defaultValue = "[\"全部\"]")String groupOf){
+        followService.saveFollow(userId,followId,groupOf);
         return "success";
     }
     @PostMapping("/deleteFollows")
