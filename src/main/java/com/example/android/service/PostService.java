@@ -118,7 +118,6 @@ public class PostService {
     public List<PostItem> findPostList(Pageable page){
         List<Post> postList;
         List<PostItem> postItems = new ArrayList<>();
-//        sort = Sort.by(Sort.Direction.DESC, "createTime");
         postList = postRepository.findAll(page).getContent();
         for (Post post:postList){
             List<String> picturePaths = new ArrayList<>();
@@ -126,7 +125,6 @@ public class PostService {
                 picturePaths.add(postPicture.getPicturePath());
             }
             PostContent postContent = postContentRepository.findByPostId(post.getPostId());
-            System.out.println(post.getPostId()+"dsadasdasd");
             PostItem postItem = new PostItem(post.getPostId(),postContent.getPostTitle(),postContent.getPostContent(),post.getUserId(),post.getCreateTime(),picturePaths);
             postItems.add(postItem);
         }
@@ -186,4 +184,6 @@ public class PostService {
     public void reportPost(Report report) {
         reportRepository.save(report);
     }
+
+
 }
