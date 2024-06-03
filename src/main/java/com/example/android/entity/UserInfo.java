@@ -24,4 +24,10 @@ public class UserInfo {
     @Transient
     private String status;
 
+    public UserInfo(){
+
+    }
+    public UserInfo(String userId){
+        this.userId = userId;
+    }
 }

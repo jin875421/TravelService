@@ -90,7 +90,7 @@ public class FollowService {
         Follow follow =followRepository.findByUserIdAndFollowId(userId,followId);
         if(follow != null){
             // 如果找到关注记录，则根据id删除该记录
-            followRepository.deleteById(follow.getId());
+            followRepository.deleteByUserIdAndFollowId(userId,followId);
             return "success";
         }
         return "fail";
@@ -111,14 +111,14 @@ public class FollowService {
             Follow follow =followRepository.findByUserIdAndFollowId(userId,followId);
             if(follow != null){
                 // 如果找到关注记录,记录下followId
-                deleteList.add(follow.getId());
+                deleteList.add(follow.getFollowId());
             } else {
                 // 存在未知记录 需要排查问题 不执行删除操作
                 return "Unknown records exist";
             }
         }
-        deleteList.forEach(id -> {
-            followRepository.deleteById(id);
+        deleteList.forEach(followId -> {
+            followRepository.deleteByUserIdAndFollowId(userId,followId);
         });
         return "success";
     }
