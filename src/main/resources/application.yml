@@ -10,7 +10,7 @@ spring:
     hikari:
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: root
-      password:
+      password: dddd
   jpa:
     database: mysql
     show-sql: false
