@@ -14,7 +14,7 @@ public class UserInfoService {
         UserInfo userInfo = repository.findByUserIdAndPassword(userId,password);
         return userInfo;
     }
-    public UserInfo register(String userId) {
+    public UserInfo getUserInfo(String userId) {
         UserInfo userInfo = repository.findByUserId(userId);
         return userInfo;
     }

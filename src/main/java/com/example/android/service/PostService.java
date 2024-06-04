@@ -3,7 +3,6 @@ package com.example.android.service;
 import com.example.android.entity.*;
 import com.example.android.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Transactional
 public class PostService {
     @Autowired
     private CommentRepository commentRepository;

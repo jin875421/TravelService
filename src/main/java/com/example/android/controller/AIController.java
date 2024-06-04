@@ -1,9 +1,6 @@
 package com.example.android.controller;
 
-import com.example.android.entity.AIResult;
-import com.example.android.entity.PostItem;
-import com.example.android.entity.Result;
-import com.example.android.entity.baike_info;
+import com.example.android.entity.*;
 import com.example.android.service.AIService;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -113,21 +110,28 @@ public class AIController {
             System.out.println("sign="+sign);
             System.out.println("路径"+myPath);
             Result aiResult = aiService.getPattern(sign,myPath);
-//            StringBuilder stringBuilder = new StringBuilder(aiResult.getResults()[0].getBaike_info().getBaike_url());
-//            Result[] results = aiResult.getResults();
-//            baike_info baike_info = new baike_info(stringBuilder.toString(),"",aiResult.getResults()[0].getBaike_info().getDescription());
-//            results[0] = new Result(aiResult.getResults()[0].getKeyword(),aiResult.getResults()[0].getScore(),aiResult.getResults()[0].getRoot(),baike_info);
-//            stringBuilder.insert(4, "s");
-//            aiResult.setResults(results);
 
             return aiResult;
         }
         return null;
     }
+    @PostMapping("/addSpeech")
+    public void addSpeech(
+            @RequestParam String userId,
+            @RequestParam String latitude,
+            @RequestParam String longitude,
+            @RequestParam String text
+    ){
+        System.out.println("接收语音内容启动");
+        Speech speech = new Speech(text,userId,Double.parseDouble(latitude),Double.parseDouble(longitude));
+        aiService.addSpeech(speech);
+    }
 
+    @GetMapping("/getSpeech")
+    public String getSpeech(){
+        System.out.println("获取语音内容启动");
+        Gson gson = new Gson();
+        String json = gson.toJson(aiService.getSpeech());
+        return json;
+    }
 }
-
-//myPath = "D://Upload//"+fileNames.get(0);
-//        }
-//
-//        return aiService.getPattern(sign,myPath);
