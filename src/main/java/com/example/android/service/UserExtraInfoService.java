@@ -2,18 +2,23 @@ package com.example.android.service;
 
 import com.example.android.entity.UserExtraInfo;
 import com.example.android.entity.UserInfo;
+import com.example.android.repository.AchievementRepository;
+import com.example.android.repository.PostRepository;
 import com.example.android.repository.UserExtraInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
 public class UserExtraInfoService {
     @Autowired
     private UserExtraInfoRepository userExtraInfoRepository;
-
+    @Autowired
+    private PostRepository postRepository;
     public String getGroupInfo(String userId) {
         return userExtraInfoRepository.findByUserId(userId).getFollowGroupInfo();
     }
@@ -54,5 +59,116 @@ public class UserExtraInfoService {
     public int updateUserExtraInfo(UserExtraInfo userExtraInfo) {
         userExtraInfoRepository.save(userExtraInfo);
         return 1;
+    }
+
+    public void addPostcount(String userId) {
+        UserExtraInfo userExtraInfo = userExtraInfoRepository.findByUserId(userId);
+        userExtraInfo.setPostCount(userExtraInfo.getPostCount() + 1);
+        List<String> achievement = new ArrayList<>();
+        if (userExtraInfo.getPostCount()+1 > 0){
+            achievement.add("1");
+        }
+        if (userExtraInfo.getPostCount()+1 >= 10){
+            achievement.add("2");
+        }
+        if (userExtraInfo.getPostCount()+1 >= 50){
+            achievement.add("3");
+        }
+        if  (userExtraInfo.getLiked() > 0){
+            achievement.add("4");
+        }
+        if (userExtraInfo.getLiked() >= 50){
+            achievement.add("5");
+        }
+        if (userExtraInfo.getLiked() >= 200){
+            achievement.add("6");
+        }
+        if (userExtraInfo.getCollected() > 0){
+            achievement.add("7");
+        }
+        if (userExtraInfo.getCollected() >= 10){
+            achievement.add("8");
+        }
+        if (userExtraInfo.getCollected() >= 50){
+            achievement.add("9");
+        }
+        userExtraInfo.setAchievement(achievement.toString());
+        userExtraInfoRepository.updateUserExtraInfo(userExtraInfo);
+
+
+        }
+
+    public void addCollectedCount(String postId) {
+        //通过postId查询作者Id
+        String userId = postRepository.findByPostId(postId).getUserId();
+        UserExtraInfo userExtraInfo = userExtraInfoRepository.findByUserId(userId);
+        userExtraInfo.setCollected(userExtraInfo.getCollected() + 1);
+        List<String> achievement = new ArrayList<>();
+        if (userExtraInfo.getPostCount() > 0){
+            achievement.add("1");
+        }
+        if (userExtraInfo.getPostCount() >= 10){
+            achievement.add("2");
+        }
+        if (userExtraInfo.getPostCount() >= 50){
+            achievement.add("3");
+        }
+        if  (userExtraInfo.getLiked() > 0){
+            achievement.add("4");
+        }
+        if (userExtraInfo.getLiked() >= 50){
+            achievement.add("5");
+        }
+        if (userExtraInfo.getLiked() >= 200){
+            achievement.add("6");
+        }
+        if (userExtraInfo.getCollected()+1 > 0){
+            achievement.add("7");
+        }
+        if (userExtraInfo.getCollected()+1 >= 10){
+            achievement.add("8");
+        }
+        if (userExtraInfo.getCollected()+1 >= 50){
+            achievement.add("9");
+        }
+        userExtraInfo.setAchievement(achievement.toString());
+        userExtraInfoRepository.updateUserExtraInfo(userExtraInfo);
+    }
+
+    public void addLikedCount(String postId) {
+        //通过postId查询作者Id
+        String userId = postRepository.findByPostId(postId).getUserId();
+        UserExtraInfo userExtraInfo = userExtraInfoRepository.findByUserId(userId);
+        userExtraInfo.setCollected(userExtraInfo.getLiked() + 1);
+        List<String> achievement = new ArrayList<>();
+        if (userExtraInfo.getPostCount() > 0){
+            achievement.add("1");
+        }
+        if (userExtraInfo.getPostCount() >= 10){
+            achievement.add("2");
+        }
+        if (userExtraInfo.getPostCount() >= 50){
+            achievement.add("3");
+        }
+        if  (userExtraInfo.getLiked() +1> 0){
+            achievement.add("4");
+        }
+        if (userExtraInfo.getLiked() +1>= 50){
+            achievement.add("5");
+        }
+        if (userExtraInfo.getLiked() +1>= 200){
+            achievement.add("6");
+        }
+        if (userExtraInfo.getCollected() > 0){
+            achievement.add("7");
+        }
+        if (userExtraInfo.getCollected() >= 10){
+            achievement.add("8");
+        }
+        if (userExtraInfo.getCollected() >= 50){
+            achievement.add("9");
+        }
+        userExtraInfo.setAchievement(achievement.toString());
+        userExtraInfoRepository.updateUserExtraInfo(userExtraInfo);
     }
 }
