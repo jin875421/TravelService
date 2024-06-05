@@ -16,6 +16,7 @@ public class UserExtraInfo {
     private int postCount;
     private int liked;
     private int collected;
+    private int level;
 
     public UserExtraInfo() {
 
