@@ -9,8 +9,6 @@ import java.util.List;
 @Data
 public class ShowPicture {
 
-//    private String pictureId;
-//    private String userId;
     private List<String> picturePath;
     private String travelDate;
     private String placeName;

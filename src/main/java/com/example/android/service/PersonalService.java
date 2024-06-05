@@ -16,4 +16,13 @@ public class PersonalService {
         personal=personalRepository.findByUserId(userId);
         return personal;
     }
+    public boolean addPersonal(Personal personal){
+        if(personal!=null){
+            personalRepository.save(personal);
+            return true;
+        }else{
+            return false;
+        }
+
+    }
 }

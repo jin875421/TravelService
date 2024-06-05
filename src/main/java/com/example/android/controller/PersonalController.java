@@ -23,7 +23,7 @@ public class PersonalController {
     private PersonalService personalService;
     @Autowired
     private FileUploadService fileUploadService;
-    private String uploadDirectory = "D:\\Upload\\Personal\\";
+    private String uploadDirectory = "D:\\Upload\\personal\\";
     @GetMapping("/getBackground")
     public Personal getBackground(@RequestParam("userId") String userId) {
         Personal personal=new Personal();
@@ -49,7 +49,12 @@ public class PersonalController {
             }
             String fileName = file.getOriginalFilename();
             String filePath =  uploadDirectory + fileName;
+            String relativePath="personal/"+fileName;
+            Personal personal=new Personal();
+            personal.setBackground(relativePath);
+            personal.setUserId(userId);
             file.transferTo(new File(filePath));
+            personalService.addPersonal(personal);
             return ResponseEntity.status(HttpStatus.OK).body("File uploaded successfully");
         } catch (IOException e) {
             e.printStackTrace();
