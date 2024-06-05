@@ -118,7 +118,6 @@ public class PostService {
     public List<PostItem> findPostList(Pageable page){
         List<Post> postList;
         List<PostItem> postItems = new ArrayList<>();
-//        sort = Sort.by(Sort.Direction.DESC, "createTime");
         postList = postRepository.findAll(page).getContent();
         for (Post post:postList){
             List<String> picturePaths = new ArrayList<>();
@@ -185,4 +184,6 @@ public class PostService {
     public void reportPost(Report report) {
         reportRepository.save(report);
     }
+
+
 }

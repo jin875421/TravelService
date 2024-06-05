@@ -18,7 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+//import java.util.concurrent.TimeUnit;
 
 
 @RestController
@@ -34,7 +34,7 @@ public class UserController {
     SmsUtil smsUtil = new SmsUtil();
 
     private final Cache<String, String> codeCache = Caffeine.newBuilder()
-            .expireAfterWrite(2, TimeUnit.MINUTES) // 设置验证码的过期时间，例如2分钟
+//            .expireAfterWrite(2, TimeUnit.MINUTES) // 设置验证码的过期时间，例如2分钟
             .build();
     @GetMapping("/getUserInfo")
     public UserInfo getUserInfo(@RequestParam("userId") String userId) {
