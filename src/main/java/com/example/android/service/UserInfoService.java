@@ -6,6 +6,8 @@ import com.example.android.utils.UniqueRandomCodeGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserInfoService {
     @Autowired
@@ -14,7 +16,7 @@ public class UserInfoService {
         UserInfo userInfo = repository.findByUserIdAndPassword(userId,password);
         return userInfo;
     }
-    public UserInfo register(String userId) {
+    public UserInfo getUserInfo(String userId) {
         UserInfo userInfo = repository.findByUserId(userId);
         return userInfo;
     }
@@ -49,4 +51,7 @@ public class UserInfoService {
     }
 
 
+    public List<UserInfo> findByUserNameContaining(String nameContaining) {
+        return repository.findByUserNameContaining(nameContaining);
+    }
 }

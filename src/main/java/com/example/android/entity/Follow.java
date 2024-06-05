@@ -14,11 +14,13 @@ public class Follow {
     private String id;
     private String userId;
     private String followId;
+    private String groupOf;
 
-    public Follow(String id, String userId, String followId) {
+    public Follow(String id, String userId, String followId, String groupOf) {
         this.id = id;
         this.userId = userId;
         this.followId = followId;
+        this.groupOf = groupOf;
     }
 
     public Follow() {

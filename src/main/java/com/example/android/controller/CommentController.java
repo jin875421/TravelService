@@ -37,7 +37,6 @@ public class CommentController {
         returnStrategyCommentList = service.getReturnStrategyCommentList(theStrategyId);
         Gson gson = new Gson();
         String json = gson.toJson(returnStrategyCommentList);
-
         return json;
     }
     @GetMapping("/getCommentCount")

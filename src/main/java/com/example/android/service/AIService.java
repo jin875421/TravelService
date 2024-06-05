@@ -4,11 +4,18 @@ import com.baidu.aip.imageclassify.AipImageClassify;
 import com.example.android.entity.AIResult;
 import com.example.android.entity.ImageRecognition;
 import com.example.android.entity.Result;
+import com.example.android.entity.Speech;
+import com.example.android.repository.SpeechRepository;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AIService {
+    @Autowired
+    private SpeechRepository speechRepository;
     //设置APPID/AK/SK
     public static final String APP_ID = "69943541";
     public static final String API_KEY = "jcrNKxCxETHRZfQajyKlzakx";
@@ -35,5 +42,13 @@ public class AIService {
             return imageRecognition.getPattern8(client, path);
         }
         return null;
+    }
+
+    public void addSpeech(Speech speech){
+        speechRepository.save(speech);
+    }
+
+    public List<Speech> getSpeech(){
+        return speechRepository.findAll();
     }
 }

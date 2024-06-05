@@ -14,4 +14,5 @@ public interface PostRepository extends JpaRepository<Post, String>, JpaSpecific
     void deleteByUserId(String userId);
     List<Post> findByUserId(String userId);
     Page<Post> findAll(Pageable page);
+
 }
