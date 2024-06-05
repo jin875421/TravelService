@@ -36,6 +36,17 @@ public class UserController {
     private final Cache<String, String> codeCache = Caffeine.newBuilder()
 //            .expireAfterWrite(2, TimeUnit.MINUTES) // 设置验证码的过期时间，例如2分钟
             .build();
+    @GetMapping("/getUserInfoListByName")
+    public List<UserInfo> getUserInfoListByName(@RequestParam("nameContaining") String nameContaining) {
+        if (nameContaining.isEmpty()) {
+            return null;
+        }
+        List<UserInfo> userInfoList = userInfoService.findByUserNameContaining(nameContaining);
+        if (userInfoList == null) {
+            return null;
+        }
+        return userInfoList;
+    }
     @GetMapping("/getUserInfo")
     public UserInfo getUserInfo(@RequestParam("userId") String userId) {
         if (userId.isEmpty()) {
