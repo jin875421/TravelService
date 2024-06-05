@@ -54,4 +54,14 @@ public class FollowController {
         followService.deleteFollows(userId,unfollowIdList);
         return "success";
     }
+    //获取粉丝数
+    @GetMapping("/getFansCount")
+    public int getFansCount(@RequestParam String userId){
+        return followService.getFansCount(userId);
+    }
+    @GetMapping("/getFollowCount")
+    public int getFollowCount(@RequestParam String userId){
+        return followService.getFollowCount(userId);
+    }
+
 }

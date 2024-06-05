@@ -142,4 +142,11 @@ public class FollowService {
     public List<Follow> getFollowList(String userId) {
         return followRepository.findByUserId(userId);
     }
+
+    public int getFansCount(String userId) {
+        return followRepository.findAllByFollowId(userId).size();
+    }
+    public int getFollowCount(String userId){
+        return followRepository.findByUserId(userId).size();
+    }
 }

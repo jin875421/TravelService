@@ -15,4 +15,6 @@ public interface FollowRepository extends JpaRepository<Follow, String>, JpaSpec
     Follow findByUserIdAndFollowId(String userId, String followId);
 
     void deleteByFollowId(String followId);
+
+    List<Follow> findAllByFollowId(String followId);
 }
