@@ -2,14 +2,14 @@ package com.example.android.controller;
 
 import com.example.android.entity.UserExtraInfo;
 import com.example.android.service.UserExtraInfoService;
+import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/userExtraInfo")
 public class UserExtraInfoController {
+    Gson gson = new Gson();
     @Autowired
     private UserExtraInfoService userExtraInfoService;
 
@@ -20,12 +20,13 @@ public class UserExtraInfoController {
     }
 
     @PostMapping("/update")
-    public String update(UserExtraInfo userExtraInfo) {
-        UserExtraInfo newUserExtraInfo = userExtraInfoService.updateUserExtraInfo(userExtraInfo);
-        if (newUserExtraInfo == null) {
-            return "fail";
+    public String update(@RequestParam String updateUserExtraInfoStr) {
+        UserExtraInfo updateUserExtraInfo = gson.fromJson(updateUserExtraInfoStr, UserExtraInfo.class);
+        int result = userExtraInfoService.updateUserExtraInfo(updateUserExtraInfo);
+        if (result > 0) {
+            return "success";
         }
-        return "success";
+        return "fail";
     }
 
 }
