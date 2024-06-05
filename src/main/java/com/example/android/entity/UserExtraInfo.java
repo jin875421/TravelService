@@ -11,6 +11,11 @@ public class UserExtraInfo {
     @Id
     private String userId;
     private String followGroupInfo;
+    private String achievement;
+    private int experience;
+    private int postCount;
+    private int liked;
+    private int collected;
 
     public UserExtraInfo() {
 
