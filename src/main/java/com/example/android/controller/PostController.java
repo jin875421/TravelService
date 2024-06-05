@@ -22,6 +22,8 @@
     @RequestMapping("/posts")
     public class PostController {
         @Autowired
+        private FollowService followService;
+        @Autowired
         private PostService postService;
         @Autowired
         private UserInfoService userInfoService;
@@ -35,6 +37,29 @@
             for (PostItem post:posts){
                 postWithUserInfos.add(new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId())));
             }
+            return postWithUserInfos;
+        }
+        //
+        @GetMapping("/getFollowPostList")
+        public List<PostWithUserInfo> getFollowPostList(@RequestParam String userId){
+            List<PostWithUserInfo> postWithUserInfos = new ArrayList<>();
+            List<UserInfo> users = followService.getFollowUserInfoList(userId);
+            for(UserInfo userInfo:users){
+                //获取关注列表的所以帖子
+                List<PostItem> posts = postService.findMyPostList(userInfo.getUserId());
+                //添加至返回的帖子列表中
+                for (PostItem post:posts){
+                    postWithUserInfos.add(new PostWithUserInfo(post,userInfoService.findByUserId(post.getUserId())));
+                }
+            }
+            //将postwithuserinfo列表按post时间排序
+            postWithUserInfos.sort(new Comparator<PostWithUserInfo>() {
+                @Override
+                public int compare(PostWithUserInfo o1, PostWithUserInfo o2) {
+                    return o2.getPost().getCreateTime().compareTo(o1.getPost().getCreateTime());
+                }
+            });
+
             return postWithUserInfos;
         }
         @GetMapping ("/getMypostlist")

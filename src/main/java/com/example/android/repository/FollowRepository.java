@@ -20,6 +20,8 @@ public interface FollowRepository extends JpaRepository<Follow, String>, JpaSpec
 
     void deleteByFollowId(String followId);
 
+    List<Follow> findAllByFollowId(String followId);
+
     // 更新 （直接用save方法？）
     @Transactional
     @Modifying

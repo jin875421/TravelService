@@ -83,4 +83,14 @@ public class FollowController {
         followService.saveFollow(userId, followId, groupOf);
         return "success";
     }
+    //获取粉丝数
+    @GetMapping("/getFansCount")
+    public int getFansCount(@RequestParam String userId){
+        return followService.getFansCount(userId);
+    }
+    @GetMapping("/getFollowCount")
+    public int getFollowCount(@RequestParam String userId){
+        return followService.getFollowCount(userId);
+    }
+
 }
