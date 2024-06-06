@@ -9,6 +9,7 @@ import javax.persistence.Id;
 @Data
 public class PictureEdit {
     @Id
+    String id;
     String userId;
     String pictureUrl;
 }
