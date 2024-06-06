@@ -2,6 +2,7 @@
     import com.example.android.entity.*;
     import com.example.android.service.FollowService;
     import com.example.android.service.PostService;
+    import com.example.android.service.UserExtraInfoService;
     import com.example.android.service.UserInfoService;
     import com.google.gson.Gson;
     import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@
     @RestController
     @RequestMapping("/posts")
     public class PostController {
+        @Autowired
+        private UserExtraInfoService userExtraInfoService;
         @Autowired
         private FollowService followService;
         @Autowired
@@ -139,6 +142,8 @@
                 post.setPicturePath(fileNames);
             }
             postService.createPost(post);
+            //帖子上传时，更新用户个人发帖数量记录
+            userExtraInfoService.addPostcount(post.getUserId());
         }
         //帖子获取
         @GetMapping("/getpostlist")
@@ -163,6 +168,7 @@
             }else {
                 //收藏不存在，执行收藏代码
                 postService.saveStar(postId,userId);
+                userExtraInfoService.addCollectedCount(postId);
                 return "不存在";
             }
         }
@@ -178,6 +184,7 @@
             }else {
                 //点赞不存在，执行点赞代码
                 postService.saveLike(postId,userId);
+                userExtraInfoService.addLikedCount(postId);
                 return "添加";
             }
         }
