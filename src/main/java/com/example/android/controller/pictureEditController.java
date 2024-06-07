@@ -13,6 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/pictureEdit")
@@ -30,6 +33,16 @@ public class pictureEditController {
             return null;
         }
     }
+    @PostMapping("/getPictureList")
+    public List<PictureEdit> getPictureList(@RequestParam("userId") String userId) {
+        List<PictureEdit> pictureEditList= pictureEditService.getPictureList(userId);
+        if (pictureEditList != null) {
+            System.out.println(pictureEditList+"-----------------------------");
+            return pictureEditList;
+        } else {
+            return null;
+        }
+    }
 
     @PostMapping("/uploadPicture")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
@@ -43,10 +56,13 @@ public class pictureEditController {
             if (!Files.exists(Paths.get(uploadDirectorys))) {
                 Files.createDirectories(Paths.get(uploadDirectorys));
             }
+            // 生成随机的UUID
+            UUID randomUUID = UUID.randomUUID();
             String fileName = file.getOriginalFilename();
             String filePath =  uploadDirectorys + fileName;
             String relativePath="pictureEdit/"+fileName;
             PictureEdit pictureEdit=new PictureEdit();
+            pictureEdit.setId(randomUUID.toString());
             pictureEdit.setUserId(userId);
             pictureEdit.setPictureUrl(relativePath);
             file.transferTo(new File(filePath));

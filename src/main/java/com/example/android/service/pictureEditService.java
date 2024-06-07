@@ -5,6 +5,8 @@ import com.example.android.repository.pictureEditRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class pictureEditService {
     @Autowired
@@ -22,5 +24,14 @@ public class pictureEditService {
             return false;
         }
 
+    }
+
+    public List<PictureEdit> getPictureList(String userId) {
+        if(userId!=null){
+            List<PictureEdit> pictureEditList=pictureEditRepository.findPictureEditsByUserId(userId);
+            return pictureEditList;
+        }else{
+            return null;
+        }
     }
 }
