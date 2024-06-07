@@ -4,6 +4,7 @@ import cn.hutool.crypto.digest.MD5;
 import com.example.android.entity.UserExtraInfo;
 import com.example.android.entity.UserInfo;
 import com.example.android.service.FileUploadService;
+import com.example.android.service.UserDailyTaskService;
 import com.example.android.service.UserExtraInfoService;
 import com.example.android.service.UserInfoService;
 import com.example.android.utils.EmailUtil;
@@ -31,6 +32,8 @@ public class UserController {
     private FileUploadService fileUploadService;
     @Autowired
     private UserExtraInfoService userExtraInfoService;
+    @Autowired
+    private UserDailyTaskService userDailyTaskService;
     SmsUtil smsUtil = new SmsUtil();
 
     private final Cache<String, String> codeCache = Caffeine.newBuilder()
@@ -172,6 +175,8 @@ public class UserController {
         UserInfo registeredUser = userInfoService.addUserInfo(user);
         // 为用户添加额外用户信息
         UserExtraInfo userExtraInfo = userExtraInfoService.addUserExtraInfo(registeredUser);
+        // 为用户创建每日任务数据
+        userDailyTaskService.creatUserDailyTasks(registeredUser.getUserId());
         return ResponseEntity.ok("{'resultCode': 1, 'msg': '注册成功'}");
     }
     @PostMapping("/forgotPassword")

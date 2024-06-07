@@ -14,7 +14,7 @@ public class UserExtraInfoController {
     private UserExtraInfoService userExtraInfoService;
 
     @PostMapping("/getUserExtraInfo")
-    public UserExtraInfo getUserExtraInfo(String userId) {
+    public UserExtraInfo getUserExtraInfo(@RequestParam String userId) {
         UserExtraInfo userExtraInfo = userExtraInfoService.getUserExtraInfo(userId);
         return userExtraInfo;
     }
