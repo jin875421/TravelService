@@ -142,7 +142,7 @@ public class UserDailyTaskService {
             int reward = task.getReward();
             int currentLevel = userExtraInfo.getLevel();
             // 升级计算 0->1 :(lv+1)*100 + lv*50=100   1->2 :250   2->3 :400   3->4 :600   4->5 :750
-            if(currentExp + reward >= (currentLevel+1)*100 + currentLevel*50){
+            if(currentExp + reward >= (currentLevel+1)*100 + currentLevel*50 && currentLevel < 5){
                 userExtraInfo.setExperience(currentExp + reward - (currentLevel+1)*100 - currentLevel*50);
                 userExtraInfo.setLevel(currentLevel + 1);
             } else {
