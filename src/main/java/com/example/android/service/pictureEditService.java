@@ -34,4 +34,7 @@ public class pictureEditService {
             return null;
         }
     }
+    public void deletePicture(String pictureUrl){
+        pictureEditRepository.deleteByPictureUrl(pictureUrl);
+    }
 }

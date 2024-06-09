@@ -10,4 +10,6 @@ public interface pictureEditRepository extends JpaRepository<PictureEdit, String
     PictureEdit findByUserId(String userId);
 
     List<PictureEdit> findPictureEditsByUserId(String userId);
+
+    void deleteByPictureUrl(String pictureUrl);
 }

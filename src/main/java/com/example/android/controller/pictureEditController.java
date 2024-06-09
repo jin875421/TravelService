@@ -9,8 +9,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -73,4 +76,27 @@ public class pictureEditController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file");
         }
     }
+
+    @PostMapping("/delete")
+    @Transactional
+    public void deletePicture(String pictureUrl) {
+        try {
+            // 使用URI解析图片URL
+            URI uri = new URI(pictureUrl);
+            // 获取路径部分
+            String path = uri.getPath();
+
+            // 直接获取最后一个'/'之后的字符串，即图片名称
+            String fileName = path.substring(path.lastIndexOf("/") + 1);
+            System.out.println(fileName);
+
+            // 调用服务层进行删除操作，传入获取到的文件名
+            pictureEditService.deletePicture("pictureEdit/"+fileName);
+        } catch (URISyntaxException e) {
+            // 处理URI解析异常
+            throw new RuntimeException("Invalid picture URL format", e);
+        }
+    }
+
+
 }
