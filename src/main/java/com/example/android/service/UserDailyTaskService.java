@@ -39,7 +39,7 @@ public class UserDailyTaskService {
             localDate = Instant.ofEpochMilli(task.getLastUpdated().getTime())
                 .atZone(ZoneId.of("Asia/Shanghai")) // 指定时区为上海，代表北京时区
                 .toLocalDate();
-            if (localDate.isBefore(nowDate)) {
+            if (localDate.isBefore(nowDate)&&!task.getTaskName().equals("每日登录打卡")) {
                 task.setProgress(0);
                 task.setCompleted(false);
                 task.setLastUpdated(now);
@@ -51,6 +51,23 @@ public class UserDailyTaskService {
 
     public void updateTaskProgress(String taskId, int progress) {
         UserDailyTask task = userDailyTaskRepository.findById(taskId).orElse(null);
+        //先执行判断是否是本日第一次执行
+        if(task!=null){
+            // 获取当前时间戳
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            // 如果任务中的时间戳小于当前时间戳(只判断日期)，进度重置在发送给用户，同步更新数据库
+            LocalDate localDate;
+            LocalDate nowDate = now.toLocalDateTime().toLocalDate();
+            localDate = Instant.ofEpochMilli(task.getLastUpdated().getTime())
+                    .atZone(ZoneId.of("Asia/Shanghai")) // 指定时区为上海，代表北京时区
+                    .toLocalDate();
+            if (localDate.isBefore(nowDate)) {
+                task.setProgress(0);
+                task.setCompleted(false);
+                task.setLastUpdated(now);
+                userDailyTaskRepository.save(task);
+            }
+        }
         if (task != null) {
             task.setProgress(progress);
             task.setCompleted(progress >= task.getMaxProgress());
@@ -97,17 +114,15 @@ public class UserDailyTaskService {
     }
 
     public String upupdateByUserIdAndTag(String userId, String tag) {
-        UserDailyTask task;
+        UserDailyTask task = userDailyTaskRepository.findByUserIdAndTaskName(userId, tag);
+        checkTask(task);
         if(tag.equals("每日登录打卡")){
-            task = userDailyTaskRepository.findByUserIdAndTaskName(userId, tag);
             return addExp(task);
         }
         if(tag.equals("浏览3个帖子")){
-            task = userDailyTaskRepository.findByUserIdAndTaskName(userId, tag);
             return addExp(task);
         }
         if(tag.equals("完成5次点赞")){
-            task = userDailyTaskRepository.findByUserIdAndTaskName(userId, tag);
             return addExp(task);
         }
         return "fail";
@@ -127,14 +142,60 @@ public class UserDailyTaskService {
             int reward = task.getReward();
             int currentLevel = userExtraInfo.getLevel();
             // 升级计算 0->1 :(lv+1)*100 + lv*50=100   1->2 :250   2->3 :400   3->4 :600   4->5 :750
-            if(currentExp + reward >= (currentLevel+1)*100 + currentLevel*50){
+            if(currentExp + reward >= (currentLevel+1)*100 + currentLevel*50 && currentLevel < 5){
                 userExtraInfo.setExperience(currentExp + reward - (currentLevel+1)*100 - currentLevel*50);
                 userExtraInfo.setLevel(currentLevel + 1);
             } else {
                 userExtraInfo.setExperience(currentExp + reward);
             }
             userExtraInfoRepository.save(userExtraInfo);
+            if (task.getTaskName().equals("每日登录打卡")){
+                return String.valueOf(task.getProgress() );
+            }
             return "success";
         }
+    }
+    private void checkTask(UserDailyTask task){
+        //先执行判断是否是本日第一次执行
+        if(task!=null){
+            // 获取当前时间戳
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            // 如果任务中的时间戳小于当前时间戳(只判断日期)，进度重置在发送给用户，同步更新数据库
+            LocalDate localDate;
+            LocalDate nowDate = now.toLocalDateTime().toLocalDate();
+            localDate = Instant.ofEpochMilli(task.getLastUpdated().getTime())
+                    .atZone(ZoneId.of("Asia/Shanghai")) // 指定时区为上海，代表北京时区
+                    .toLocalDate();
+            System.out.println(task.getLastUpdated());
+            if (localDate.isBefore(nowDate)&&!task.getTaskName().equals("每日登录打卡")) {
+                task.setProgress(0);
+                task.setCompleted(false);
+                task.setLastUpdated(now);
+                userDailyTaskRepository.save(task);
+
+            }else if (task.getTaskName().equals("每日登录打卡")){
+                //执行每日打卡判断,查看上次打卡时间是否为昨天
+                System.out.println(localDate);
+//                System.out.println(nowDate.minusDays(1));
+//                System.out.println(nowDate);
+                if(localDate.isBefore(nowDate.minusDays(1))){
+                    System.out.println("11111");
+                    task.setProgress(0);
+                    task.setCompleted(false);
+                    task.setLastUpdated(now);
+                    userDailyTaskRepository.save(task);
+
+                }else if (localDate.isBefore(nowDate)){
+                    System.out.println("3333");
+                    task.setCompleted(false);
+                    task.setLastUpdated(now);
+                    userDailyTaskRepository.save(task);
+
+                }
+
+            }
+
+        }
+
     }
 }

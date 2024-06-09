@@ -59,12 +59,19 @@ public class FollowController {
     public List<UserInfo> getFollowUserInfoList(@RequestParam String userId) {
         return followService.getFollowUserInfoList(userId);
     }
+    @GetMapping("/getFansUserInfoList")
+    public List<UserInfo> getFansUserInfoList(@RequestParam String userId) {
+        return followService.getFansUserInfoList(userId);
+    }
 
     @GetMapping("/getFollowList")
     public List<Follow> getFollowList(@RequestParam String userId) {
         return followService.getFollowList(userId);
     }
-
+    @GetMapping("/getFansList")
+    public List<Follow> getFansList(@RequestParam String userId) {
+        return followService.getFansList(userId);
+    }
     @PostMapping("/deleteFollow")
     public String deleteFollow(@RequestParam String userId, @RequestParam String followId) {
         followService.deleteFollow(userId, followId);
