@@ -92,8 +92,13 @@ public class UserExtraInfoService {
         if (userExtraInfo.getCollected() >= 50){
             achievement.add("9");
         }
-        userExtraInfo.setAchievement(achievement.toString());
-        userExtraInfoRepository.updateUserExtraInfo(userExtraInfo);
+        if (!achievement.isEmpty()){
+            String achievementString = userExtraInfo.getAchievement();
+            //删除中括号
+            achievementString = achievementString.substring(1,achievementString.length()-1);
+            userExtraInfo.setAchievement(achievementString);
+            userExtraInfoRepository.updateUserExtraInfo(userExtraInfo);
+        }
 
 
         }
