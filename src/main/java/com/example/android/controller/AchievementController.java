@@ -18,4 +18,10 @@ public class AchievementController {
     {
         return achievementService.getAchievement(userId);
     }
+
+    @RequestMapping("/getUnattained")
+    public List<Achievement> getUnattained(String userId)
+    {
+        return achievementService.getUnattained(userId);
+    }
 }

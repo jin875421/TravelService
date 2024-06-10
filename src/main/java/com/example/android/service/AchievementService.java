@@ -34,4 +34,26 @@ public class AchievementService {
         }
         return achievements;
     }
+
+    public List<Achievement> getUnattained(String userId) {
+        UserExtraInfo userExtraInfo = userExtraInfoService.getUserExtraInfo(userId);
+        //读取用户成就列表
+        String achievementStr = userExtraInfo.getAchievement();
+        List<String> achievement = new ArrayList<>();
+        // 以逗号分隔
+        if (!achievementStr.isEmpty()) {
+            String[] items = achievementStr.split(",");
+            for (String item : items) {
+                achievement.add(item.trim()); // 添加并去除可能的前后空白
+            }
+        }
+        List<Achievement> allAchievements = achievementRepository.findAll();
+        List<Achievement> unattainedAchievements = new ArrayList<>();
+        for (Achievement achievement1 : allAchievements){
+            if(!achievement.contains(String.valueOf(achievement1.getId()))){
+                unattainedAchievements.add(achievement1);
+            }
+        }
+        return unattainedAchievements;
+    }
 }
