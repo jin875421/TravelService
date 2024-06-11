@@ -93,9 +93,9 @@ public class UserExtraInfoService {
             achievement.add("9");
         }
         if (!achievement.isEmpty()){
-            String achievementString = userExtraInfo.getAchievement();
-            //删除中括号
-            achievementString = achievementString.substring(1,achievementString.length()-1);
+            String achievementString = achievement.toString();
+            //去除两端中括号
+            achievementString = achievementString.substring(1, achievementString.length() - 1);
             userExtraInfo.setAchievement(achievementString);
             userExtraInfoRepository.updateUserExtraInfo(userExtraInfo);
         }
@@ -136,8 +136,13 @@ public class UserExtraInfoService {
         if (userExtraInfo.getCollected()+1 >= 50){
             achievement.add("9");
         }
-        userExtraInfo.setAchievement(achievement.toString());
-        userExtraInfoRepository.updateUserExtraInfo(userExtraInfo);
+        if (!achievement.isEmpty()){
+            String achievementString = achievement.toString();
+            //去除两端中括号
+            achievementString = achievementString.substring(1, achievementString.length() - 1);
+            userExtraInfo.setAchievement(achievementString);
+            userExtraInfoRepository.updateUserExtraInfo(userExtraInfo);
+        }
     }
 
     public void addLikedCount(String postId) {
@@ -173,7 +178,12 @@ public class UserExtraInfoService {
         if (userExtraInfo.getCollected() >= 50){
             achievement.add("9");
         }
-        userExtraInfo.setAchievement(achievement.toString());
-        userExtraInfoRepository.updateUserExtraInfo(userExtraInfo);
+        if (!achievement.isEmpty()){
+            String achievementString = achievement.toString();
+            //去除两端中括号
+            achievementString = achievementString.substring(1, achievementString.length() - 1);
+            userExtraInfo.setAchievement(achievementString);
+            userExtraInfoRepository.updateUserExtraInfo(userExtraInfo);
+        }
     }
 }
