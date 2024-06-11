@@ -64,6 +64,11 @@ public class FollowController {
         return followService.getFansUserInfoList(userId);
     }
 
+    @GetMapping("/getFansAndFollowUserInfoList")
+    public List<UserInfo> getFansAndFollowUserInfoList(@RequestParam String userId) {
+        return followService.getFansAndFollowUserInfoList(userId);
+    }
+
     @GetMapping("/getFollowList")
     public List<Follow> getFollowList(@RequestParam String userId) {
         return followService.getFollowList(userId);
