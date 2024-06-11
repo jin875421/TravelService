@@ -132,6 +132,7 @@ public class AIController {
         System.out.println("获取语音内容启动");
         Gson gson = new Gson();
         String json = gson.toJson(aiService.getSpeech());
+        System.out.println("向移动端传输的内容"+json);
         return json;
     }
 }

@@ -49,6 +49,7 @@ public class AIService {
     }
 
     public List<Speech> getSpeech(){
+        System.out.println("getSpeech"+speechRepository.findAll().get(0).getLatitude());
         return speechRepository.findAll();
     }
 }
