@@ -183,6 +183,55 @@ public class FollowService {
         return userInfoList;
     }
 
+    public List<UserInfo> getFansAndFollowUserInfoList(String userId) {
+        List<UserInfo> list = new ArrayList<>();
+        // 通过用户ID查询关注列表
+        List<Follow> fansList = followRepository.findAllByFollowId(userId);
+
+        // 遍历关注列表，验证关注的用户是否存在，若不存在则删除该关注记录
+        fansList.forEach(follow -> {
+            UserInfo userInfo = userInfoRepository.findByUserId(follow.getUserId());
+            if (userInfo == null) {
+                followRepository.deleteByFollowId(follow.getUserId());
+            }
+        });
+
+        // 重新获取经过验证后的关注列表
+        fansList = followRepository.findAllByFollowId(userId);
+
+        // 遍历关注列表，获取关注用户的信息
+        fansList.forEach(follow -> {
+            UserInfo userInfo = userInfoRepository.findByUserId(follow.getUserId());
+            if (userInfo != null) {
+                list.add(userInfo);
+            }
+        });
+
+
+        // 通过用户ID查询关注列表
+        List<Follow> followList = followRepository.findByUserId(userId);
+
+        // 遍历关注列表，验证关注的用户是否存在，若不存在则删除该关注记录
+        followList.forEach(follow -> {
+            UserInfo userInfo = userInfoRepository.findByUserId(follow.getFollowId());
+            if (userInfo == null) {
+                followRepository.deleteByFollowId(follow.getFollowId());
+            }
+        });
+
+        // 重新获取经过验证后的关注列表
+        followList = followRepository.findByUserId(userId);
+
+        // 遍历关注列表，获取关注用户的信息
+        followList.forEach(follow -> {
+            UserInfo userInfo = userInfoRepository.findByUserId(follow.getFollowId());
+            if (userInfo != null) {
+                list.add(userInfo);
+            }
+        });
+        return list;
+    }
+
     public List<Follow> getFansList(String userId) {
         return followRepository.findAllByFollowId(userId);
     }
