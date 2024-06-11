@@ -44,6 +44,9 @@ public class UserDailyTaskService {
                 task.setCompleted(false);
                 task.setLastUpdated(now);
                 userDailyTaskRepository.save(task);
+            }else if (task.getTaskName().equals("每日登录打卡")&&localDate.isBefore(nowDate)){
+                task.setCompleted(false);
+                userDailyTaskRepository.save(task);
             }
         }
         return userDailyTasks;
